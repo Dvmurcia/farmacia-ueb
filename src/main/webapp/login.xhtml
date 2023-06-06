@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>Login</title>
+	<h:outputStylesheet library="primefaces-aristo" name="theme.css" />
+	<style>
+body {
+	background-image:
+		url('https://i.pinimg.com/564x/47/a5/40/47a54046a8a0bf77b047d4189313297b.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.login-container {
+	text-align: center;
+}
+
+.login-container .ui-inputtext {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.login-container .ui-button {
+	width: 100%;
+}
+
+.center-button {
+	text-align: center;
+}
+
+.center {
+	margin: auto;
+	width: 50%;
+	border: 3px solid green;
+	padding: 10px;
+}
+</style>
+</h:head>
+<h:body>
+	<h:form id="loginForm">
+		<p:dialog header="Login" widgetVar="loginDialog" modal="true"
+			draggable="false" resizable="false">
+			<h:panelGrid columns="2" class="login-container">
+				<h:outputLabel for="usuario" value="Usuario:" />
+				<p:inputText id="usuario" value="#{loginMB.usuario}"
+					required="true" />
+				<h:outputLabel for="clave" value="Clave:" />
+				<p:password id="clave" value="#{loginMB.clave}" required="true"
+					feedback="true" />
+				<div styleClass="center">
+					<p:commandButton value="Ingresar" action="#{loginMB.ingresar()}"
+						update="loginForm" styleClass="center-button" />
+				</div>
+			</h:panelGrid>
+		</p:dialog>
+		<script>
+			// Función para mostrar el diálogo de login al cargar la página
+			function showLoginDialog() {
+				PF('loginDialog').show();
+			}
+			// Llamar a la función showLoginDialog() al cargar la página
+			window.onload = showLoginDialog;
+		</script>
+	</h:form>
+</h:body>
+</html>
