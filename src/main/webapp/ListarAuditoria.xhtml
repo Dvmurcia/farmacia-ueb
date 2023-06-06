@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>Lista de Productos</title>
+</h:head>
+<style>
+.ui-filter-column .ui-column-customfilter .custom-filter {
+	width: 100%;
+	box-sizing: border-box;
+}
+</style>
+
+<div class="card">
+	<h1>Auditoria</h1>
+	<h:form>
+		<p:dataTable var="customer" value="#{dtFilterView.customers1}"
+			widgetVar="customersTable"
+			emptyMessage="No customers found with given criteria"
+			filteredValue="#{dtFilterView.filteredCustomers1}"
+			globalFilterOnly="#{dtFilterView.globalFilterOnly}">
+
+			<p:column headerText="Name" sortBy="#{customer.name}"
+				filterBy="#{auditoria.id_usuario}" filterMatchMode="contains">
+				<h:outputText value="#{auditoria.id_usuario}" />
+			</p:column>
+
+			<p:column field="fecha_auditoria" headerText="Fecha Auditoria"
+				filterMatchMode="exact" sortBy="#{auditoria.fecha_auditoria}">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('customersTable').filter()"
+						styleClass="ui-custom-filter">
+						<f:selectItem itemLabel="All" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{dtFilterView.representatives}" />
+					</p:selectOneMenu>
+				</f:facet>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</div>
+
+</html>
