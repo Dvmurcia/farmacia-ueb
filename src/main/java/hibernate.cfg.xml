@@ -4,7 +4,7 @@
 	<session-factory>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/farmaciaueb?characterEncoding=utf8</property>
+		<property name="hibernate.connection.url">jdbc:mysql://34.105.127.223:3306/farmaciaueb?allowPublicKeyRetrieval=true&amp;characterEncoding=utf8</property>
 		<property name="hibernate.connection.username">root</property>
 		<property name="hibernate.connection.password">Admin123</property>
 	</session-factory>
