@@ -21,7 +21,14 @@
 			emptyMessage="No customers found with given criteria"
 			filteredValue="#{dtFilterView.filteredCustomers1}"
 			globalFilterOnly="#{dtFilterView.globalFilterOnly}">
-
+			<p:column field="date" headerText="Join Date"
+				filterMatchMode="between">
+				<f:facet name="filter">
+					<p:datePicker selectionMode="range"
+						onchange="PF('customersTable2').filter()"
+						styleClass="ui-custom-filter" />
+				</f:facet>
+			</p:column>
 			<p:column headerText="Name" sortBy="#{customer.name}"
 				filterBy="#{auditoria.id_usuario}" filterMatchMode="contains">
 				<h:outputText value="#{auditoria.id_usuario}" />
