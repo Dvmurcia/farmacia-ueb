@@ -40,7 +40,7 @@ public class LoginMB {
 
 			} else {
 				this.intentos++;
-				showMessage("Credenciales incorrectas");
+				//showMessage("Credenciales incorrectas");
 				LOGGER.info("Credenciales incorrectas para el usuario " + this.usuario);
 				// TODO mostrar mensaje de "Error al loguearse"
 				// TODO implementar componente de mensajes de PrimeFaces
@@ -53,10 +53,12 @@ public class LoginMB {
 		LOGGER.info("Intentos de logueo: " + this.intentos);
 	}
 
-	public void showMessage(String msj) {
+	/*
+	 public void showMessage(String msj) {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Mensaje", msj);
 		PrimeFaces.current().dialog().showMessageDynamic(message);
-	}
+	} 
+	 */
 
 	public String getUsuario() {
 		return usuario;
