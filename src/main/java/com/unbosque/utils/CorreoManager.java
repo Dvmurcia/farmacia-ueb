@@ -2,7 +2,6 @@ package com.unbosque.utils;
 
 import java.util.Properties;
 import java.util.Random;
-
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -12,14 +11,14 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.jboss.logging.Logger;
+
 public class CorreoManager {
+	private static final Logger LOGGER = Logger.getLogger(CorreoManager.class.getName());
 	private final Properties properties = new Properties();
 	private final String remitente = "serviciovudu@gmail.com";
 	private final String contrasena = "qqzittimwksylpwk";
 	private static Session sesion;
-
-	// TODO metodo de generacion aleatoria de contrasena
-	// TODO agregar log4j
 
 	public boolean enviarCorreo(String destinatario, String usuario) {
 		inicializar();
@@ -30,16 +29,16 @@ public class CorreoManager {
 			message.setFrom(new InternetAddress(remitente));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
 			// TODO cambiar asunto y cuerpo del correo
-			message.setSubject("Verificacion de registro en Vudu");
-			message.setText("Bienvenido a la aplicacion Vudu - Creada por Bostinder \n"
+			message.setSubject("Farmacia UEB te da la bienvenida");
+			message.setText("¡Bienvenido a la Farmacia UEB! \n"
 					+ "A continuacion, relacionamos sus credenciales de acceso para acceder a la aplicacion: \n"
-					+ "Usuario: " + usuario + "\n" + "Contrase�a: " + contrasena);
+					+ "Usuario: " + usuario + "\n" + "Contraseña: " + contrasena);
 			Transport.send(message);
 
-			System.out.println("Correo enviado");
+			LOGGER.info("SE HA ENVIADO EL CORREO ELECTRONICO AL DESTINATARIO: " + destinatario);
 			return true;
 		} catch (MessagingException e) {
-			e.printStackTrace();
+			LOGGER.error("Error al enviar el correo electronico: ", e);
 			return false;
 		}
 	}
