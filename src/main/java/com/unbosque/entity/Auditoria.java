@@ -10,7 +10,7 @@ import java.util.Date;
  * 
  */
 @Entity
-@NamedQuery(name="Auditoria.findAll", query="SELECT a FROM Auditoria a")
+@Table(name="auditoria")
 public class Auditoria implements Serializable {
 	private static final long serialVersionUID = 1L;
 

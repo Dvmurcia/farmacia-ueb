@@ -40,7 +40,7 @@ public class ParametroService implements ParametroDAO {
 	public List<Parametro> list() {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction t = session.beginTransaction();
-		List lista = session.createQuery("from parametro").list();
+		List lista = session.createQuery("from Parametro").list();
 		t.commit();
 		return lista;
 	}
