@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>Lista de Parametros</title>
+</h:head>
+<style>
+h1 {
+	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333333;
+	margin-bottom: 10px;
+}
+
+.ui-filter-column .ui-column-customfilter .custom-filter {
+	width: 100%;
+	box-sizing: border-box;
+}
+</style>
+<div class="card">
+	<h1>Parámetros</h1>
+	<h:form id="form">
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+					onclick="PF('nuevoParametro').show()" />
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+					styleClass="ui-button-danger" ajax="false">
+					<p:dataExporter type="pdf" target="dt-parametros"
+						fileName="Parametros" />
+				</p:commandButton>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<p:dataTable id="dt-parametros" var="parametro"
+			value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
+			selection="#{listarParametroMB.parametroSeleccionado}"
+			selectionMode="single" showGridlines="true">
+			<p:column headerText="Identificador">
+				<h:outputText value="#{parametro.id}" />
+			</p:column>
+			<p:column headerText="Nombre del parámetro">
+				<h:outputText value="#{parametro.nombreParametro}" />
+			</p:column>
+			<p:column headerText="Descripción">
+				<h:outputText value="#{parametro.descripcionParametro}" />
+			</p:column>
+			<p:column headerText="Valor del Parámetro">
+				<h:outputText value="#{parametro.valorParametro}" />
+			</p:column>
+			<p:column headerText="Estado">
+				<h:outputText value="#{parametro.estadoParametro}" />
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<h:form>
+		<p:dialog header="Nuevo Parametro" widgetVar="nuevoParametro"
+			showEffect="fade" modal="true">
+			<p class="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing
+				elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+				aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+				laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
+				dolor in reprehenderit in voluptate velit esse cillum dolore eu
+				fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+				proident, sunt in culpa qui officia deserunt mollit anim id est
+				laborum.</p>
+			<f:facet name="footer">
+				<p:commandButton type="button" value="No"
+					styleClass="ui-button-flat mr-2" style="width: 6rem"
+					onclick="PF('nuevoParametro').hide()" />
+				<p:commandButton type="button" value="Yes" style="width: 5rem" />
+			</f:facet>
+		</p:dialog>
+	</h:form>
+
+</div>
+
+</html>

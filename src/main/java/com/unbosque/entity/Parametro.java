@@ -9,7 +9,7 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@NamedQuery(name="Parametro.findAll", query="SELECT p FROM Parametro p")
+@Table(name="parametro")
 public class Parametro implements Serializable {
 	private static final long serialVersionUID = 1L;
 
