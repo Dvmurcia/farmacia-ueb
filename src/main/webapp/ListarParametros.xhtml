@@ -15,18 +15,27 @@ h1 {
 	margin-bottom: 10px;
 }
 
+.sin-lineas {
+	border: none !important;
+}
+
 .ui-filter-column .ui-column-customfilter .custom-filter {
 	width: 100%;
 	box-sizing: border-box;
 }
 </style>
 <div class="card">
+	<p:growl id="growl" showDetail="true" />
 	<h1>Parámetros</h1>
 	<h:form id="form">
 		<p:toolbar>
 			<p:toolbarGroup align="left">
 				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
-					onclick="PF('nuevoParametro').show()" />
+					update=":nuevoParametro" action="limpiarParametroMB.reset()"
+					onclick="PF('nuevoParametro').show()">
+					<p:ajax update="dialogNuevoParametro:parametroGrid"
+						resetValues="true" />
+				</p:commandButton>
 			</p:toolbarGroup>
 			<p:toolbarGroup align="right">
 				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
@@ -38,8 +47,7 @@ h1 {
 		</p:toolbar>
 		<p:dataTable id="dt-parametros" var="parametro"
 			value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
-			selection="#{listarParametroMB.parametroSeleccionado}"
-			selectionMode="single" showGridlines="true">
+			showGridlines="true">
 			<p:column headerText="Identificador">
 				<h:outputText value="#{parametro.id}" />
 			</p:column>
@@ -58,26 +66,50 @@ h1 {
 		</p:dataTable>
 	</h:form>
 
-	<h:form>
+	<h:form id="dialogNuevoParametro">
 		<p:dialog header="Nuevo Parametro" widgetVar="nuevoParametro"
-			showEffect="fade" modal="true">
-			<p class="m-0">Lorem ipsum dolor sit amet, consectetur adipiscing
-				elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-				aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-				laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-				dolor in reprehenderit in voluptate velit esse cillum dolore eu
-				fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-				proident, sunt in culpa qui officia deserunt mollit anim id est
-				laborum.</p>
+			showEffect="fade" modal="true" onShow="#{limpiarParametroMB.reset()}">
+			<p:panelGrid id="parametroGrid" columns="2" layout="grid"
+				columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+				<p:outputLabel for="nombreParametro" value="Nombre del Parámetro:" />
+				<p:inputText id="nombreParametro"
+					value="#{listarParametroMB.nombreParametro}" required="true" />
+
+				<p:outputLabel for="descripcionParametro"
+					value="Descripcion del Parámetro:" />
+				<p:inputText id="descripcionParametro"
+					value="#{listarParametroMB.descripcionParametro}" required="true" />
+
+				<p:outputLabel for="valorParametro" value="Valor del Parametro" />
+				<p:inputText id="valorParametro"
+					value="#{listarParametroMB.valorParametro}" required="true" />
+
+				<p:outputLabel for="estadoParametro" value="Estado" />
+				<p:selectOneMenu id="estadoParametro" style="width: 100%;"
+					value="#{listarParametroMB.estadoParametro}">
+					<f:selectItem itemLabel="Activo" itemValue="1" />
+					<f:selectItem itemLabel="Inactivo" itemValue="0" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+
 			<f:facet name="footer">
-				<p:commandButton type="button" value="No"
+				<p:commandButton type="button" value="Cancelar"
 					styleClass="ui-button-flat mr-2" style="width: 6rem"
-					onclick="PF('nuevoParametro').hide()" />
-				<p:commandButton type="button" value="Yes" style="width: 5rem" />
+					update="parametroGrid" process="@this"
+					action="#{listararParametroMB.reset()}"
+					onclick="PF('nuevoParametro').hide()"
+					resetValues="true">
+					<p:ajax update="parametroGrid" resetValues="true" />
+				</p:commandButton>
+				<p:commandButton value="Agregar" style="width: 6rem"
+					action="#{listarParametroMB.crearParametro}" update="growl"
+					process="@form" ajax="true"
+					actionListener="#{listarParametroMB.showInfo}"
+					resetValues="true" />
 			</f:facet>
 		</p:dialog>
 	</h:form>
-
 </div>
 
 </html>
