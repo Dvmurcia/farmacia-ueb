@@ -8,66 +8,244 @@
 </h:head>
 <h:body>
 	<h1>Inventario</h1>
-	<h:form>
+	<h:form id="form">
+		<p:growl id="msjs" showDetail="true" />
 		<p:toolbar>
 			<p:toolbarGroup>
-				<p:commandButton value="Nuevo" icon="pi pi-plus"
-					styleClass="ui-button-success" style="margin-right: .5rem">
+				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+					onclick="PF('nuevoProducto').show()" />
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+					styleClass="ui-button-danger" ajax="false">
+					<p:dataExporter type="pdf" target="productos" fileName="Productos" />
 				</p:commandButton>
 
 			</p:toolbarGroup>
 		</p:toolbar>
 		<div class="inventario">
-			<p:dataTable var="producto" value="#{productoMB.listarProductos}"
-				showGridlines="true">
+			<p:dataTable id="productos" var="producto"
+				value="#{productoMB.listaProductos}" showGridlines="true"
+				editable="true">
+
+				<p:ajax event="rowEdit" listener="#{productoMB.editarMsj}"
+					update=":form:msjs" />
+
+				<p:ajax event="rowEditCancel" listener="#{productoMB.onRowCancel}"
+					update=":form:msjs" />
 
 				<p:column headerText="ID">
 					<h:outputText value="#{producto.id}" />
 				</p:column>
+
 				<p:column headerText="Referencia Producto">
-					<h:outputText value="#{producto.referenciaProducto}" />
-				</p:column>
-				<p:column headerText="Descripcion Producto">
-					<h:outputText value="#{producto.descripcionProducto}" />
-				</p:column>
-				<p:column headerText="Existencia producto">
-					<h:outputText value="#{producto.existenciaProducto}" />
-				</p:column>
-				<p:column headerText="ID Categoria">
-					<h:outputText
-						value="#{producto.idCategoria} - #{categoria.nombreCategoria}" />
-				</p:column>
-				<p:column headerText="Stock Maximo">
-					<h:outputText value="#{producto.stockMaximo}" />
-				</p:column>
-				<p:column headerText="Stock Minimo">
-					<h:outputText value="#{producto.stockMinimo}" />
-				</p:column>
-				<p:column headerText="Precio Venta">
-					<h:outputText value="#{producto.precioVenta}" />
-				</p:column>
-				<p:column headerText="Precio Compra">
-					<h:outputText value="#{producto.precioCompra}" />
-				</p:column>
-				<p:column headerText="IVA">
-					<h:outputText value="#{producto.tieneIva}" />
-				</p:column>
-				<p:column headerText="Estado Producto">
-					<h:outputText value="#{producto.estadoProducto}" />
+
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.referenciaProducto}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpRefProducto"
+								value="#{producto.referenciaProducto}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+
 				</p:column>
 
+				<p:column headerText="Descripcion Producto">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.descripcionProducto}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpDesProducto"
+								value="#{producto.descripcionProducto}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Existencia producto">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.existenciaProducto}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpExisProducto"
+								value="#{producto.existenciaProducto}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="ID Categoria">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.idCategoria}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpIdCat" value="#{producto.idCategoria}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Stock Maximo">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.stockMaximo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpStockMax" value="#{producto.stockMaximo}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Stock Minimo">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.stockMinimo}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpStockMin" value="#{producto.stockMinimo}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Precio Venta">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.precioVenta}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpPrecioVenta" value="#{producto.precioVenta}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+
+				</p:column>
+
+				<p:column headerText="Precio Compra">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.precioCompra}">
+								<f:convertNumber type="currency" currencySymbol="$" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpPrecioCompra"
+								value="#{producto.precioCompra}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="IVA">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.tieneIva}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpTieneIva" value="#{producto.tieneIva}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Estado Producto">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{producto.estadoProducto}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpestadoProducto"
+								value="#{producto.estadoProducto}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column styleClass="edit-button rounded-button ui-button-success"
+					exportable="false">
+					<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+						saveTitle="Save Row" />
+				</p:column>
 
 				<p:column exportable="false">
-					<p:commandButton icon="pi pi-pencil"
-						styleClass="edit-button rounded-button ui-button-success">
-					</p:commandButton>
 					<p:commandButton icon="pi pi-trash"
-						styleClass="ui-button-warning rounded-button">
+						styleClass="ui-button-warning rounded-button" process="@this"
+						oncomplete="PF('eliminar').show()">
+
+						<f:setPropertyActionListener value="#{producto}"
+							target="#{productoMB.prodSeleccionado}" />
 					</p:commandButton>
 				</p:column>
-
 			</p:dataTable>
 		</div>
+	</h:form>
+	<h:form>
+		<p:dialog header="Nuevo Producto" widgetVar="nuevoProducto"
+			showEffect="fade" modal="true">
+			<p:panelGrid id="productoGrid" columns="4" layout="grid"
+				columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+				<p:outputLabel for="referenciaProducto"
+					value="Referencia del producto:" />
+				<p:inputText id="referenciaProducto"
+					value="#{productoMB.refProducto}" />
+
+				<p:outputLabel for="descripcionProd"
+					value="Descripcion del producto:" />
+				<p:inputText id="descripcionProd"
+					value="#{productoMB.descripcionProd}" />
+
+				<p:outputLabel for="existenciaProd" value="Existencia del producto:" />
+				<p:inputText id="existenciaProd"
+					value="#{productoMB.existenciaProd}" />
+
+				<p:outputLabel for="idCategoria" value="ID Categoria:" />
+				<p:inputText id="idCategoria" value="#{productoMB.idCategoria}" />
+
+				<p:outputLabel for="stockMin" value="Stock Minimo:" />
+				<p:inputText id="stockMin" value="#{productoMB.stockMin}" />
+
+
+				<p:outputLabel for="stockMax" value="Stock Maximo:" />
+				<p:inputText id="stockMax" value="#{productoMB.stockMax}" />
+
+				<p:outputLabel for="tieneIva" value="Tiene IVA:" />
+				<p:inputText id="tieneIva" value="#{productoMB.iva}" />
+
+				<p:outputLabel for="precioVenta" value="Precio de venta:" />
+				<p:inputText id="precioVenta" value="#{productoMB.precioVenta}" />
+
+				<p:outputLabel for="precioCompra" value="Precio de compra:" />
+				<p:inputText id="precioCompra" value="#{productoMB.precioCompra}" />
+
+				<p:outputLabel for="estadoProd" value="Estado del producto:" />
+				<p:inputText id="estadoProd" value="#{productoMB.estadoProd}" />
+			</p:panelGrid>
+			<f:facet name="footer">
+				<p:commandButton type="button" value="Cancelar"
+					styleClass="ui-button-flat mr-2" style="width: 6rem"
+					onclick="PF('nuevoProducto').hide()" />
+				<p:commandButton type="button" value="Agregar" style="width: 6rem" />
+			</f:facet>
+		</p:dialog>
+	</h:form>
+
+	<h:form id="dialogs">
+		<p:confirmDialog widgetVar="eliminar" showEffect="fade" width="300"
+			message="¿Seguro que desea eliminar el producto?"
+			header="Confirmacion" severity="warn">
+			<p:commandButton value="Si" icon="pi pi-check"
+				actionListener="#{productoMB.eliminarProd}" process="@this"
+				oncomplete="PF('eliminar').hide()" />
+			<p:commandButton value="No" type="button"
+				styleClass="ui-button-secondary" icon="pi pi-times"
+				onclick="PF('eliminar').hide()" />
+		</p:confirmDialog>
 	</h:form>
 </h:body>
 </html>

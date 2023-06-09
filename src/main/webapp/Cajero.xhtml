@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>Lista de Productos</title>
+</h:head>
+<h:body>
+
+	<h:form>
+		<p:toolbar>
+			<p:toolbarGroup>
+				<h1>Cajero</h1>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<div class="inventario">
+			<p:dataTable id="productos" var="producto"
+				value="#{productoMB.listarProductos}" showGridlines="true"
+				editable="true">
+
+				<p:column headerText="ID">
+					<h:outputText value="#{producto.id}" />
+				</p:column>
+				<p:column headerText="Referencia Producto">
+					<h:outputText value="#{producto.referenciaProducto}" />
+				</p:column>
+				<p:column headerText="Descripcion Producto">
+					<h:outputText value="#{producto.descripcionProducto}" />
+				</p:column>
+				<p:column headerText="Existencia producto">
+					<h:outputText value="#{producto.existenciaProducto}" />
+				</p:column>
+				<p:column headerText="ID Categoria">
+					<h:outputText
+						value="#{producto.idCategoria} - #{categoria.nombreCategoria}" />
+				</p:column>
+				<p:column headerText="Stock Maximo">
+					<h:outputText value="#{producto.stockMaximo}" />
+				</p:column>
+				<p:column headerText="Stock Minimo">
+					<h:outputText value="#{producto.stockMinimo}" />
+				</p:column>
+				<p:column headerText="Precio Venta">
+					<h:outputText value="#{producto.precioVenta}" />
+				</p:column>
+				<p:column headerText="Precio Compra">
+					<h:outputText value="#{producto.precioCompra}" />
+				</p:column>
+				<p:column headerText="IVA">
+					<h:outputText value="#{producto.tieneIva}" />
+				</p:column>
+				<p:column headerText="Estado Producto">
+					<h:outputText value="#{producto.estadoProducto}" />
+				</p:column>
+
+			</p:dataTable>
+		</div>
+	</h:form>
+</h:body>
+</html>
