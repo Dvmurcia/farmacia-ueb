@@ -48,11 +48,9 @@ body {
 			draggable="false" resizable="false">
 			<h:panelGrid columns="2" class="login-container">
 				<h:outputLabel for="usuario" value="Usuario:" />
-				<p:inputText id="usuario" value="#{loginMB.usuario}"
-					required="true" />
+				<p:inputText id="usuario" value="#{loginMB.usuario}" required="true" />
 				<h:outputLabel for="clave" value="Clave:" />
-				<p:password id="clave" value="#{loginMB.clave}" required="true"
-					feedback="true" />
+				<p:password id="clave" value="#{loginMB.clave}" required="true" />
 				<div styleClass="center">
 					<p:commandButton value="Ingresar" action="#{loginMB.ingresar()}"
 						update="loginForm" styleClass="center-button" />
