@@ -11,6 +11,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 
+import com.unbosque.entity.Parametro;
 import com.unbosque.entity.Producto;
 import com.unbosque.service.ProductoService;
 
@@ -29,10 +30,11 @@ public class ProductoMB {
 	private int idCategoria;
 	private int stockMin;
 	private int stockMax;
-	private int iva;
+	private byte iva;
 	private int precioVenta;
 	private int precioCompra;
-	private int estadoProd;
+	private byte estadoProd;
+
 	private Producto producto;
 	private List<Producto> listaProductos;
 	private Producto prodSeleccionado;
@@ -47,6 +49,45 @@ public class ProductoMB {
 
 	}
 
+	public void crearProducto() {
+		System.out.println("creando producto...");
+		Producto nuevoProducto = new Producto();
+		
+		nuevoProducto.setReferenciaProducto(refProducto);
+		nuevoProducto.setDescripcionProducto(descripcionProd);
+		nuevoProducto.setExistenciaProducto(existenciaProd);
+		nuevoProducto.setIdCategoria(idCategoria);
+		nuevoProducto.setStockMinimo(stockMin);
+		nuevoProducto.setStockMaximo(stockMax);
+		nuevoProducto.setTieneIva(iva);
+		nuevoProducto.setPrecioVenta(precioVenta);
+		nuevoProducto.setPrecioCompra(precioCompra);
+		nuevoProducto.setEstadoProducto(estadoProd);
+
+		this.productoService.save(nuevoProducto);
+		System.out.println("Producto agregado");
+		this.listaProductos = this.productoService.list();
+		
+		this.refProducto=null;
+		this.descripcionProd= null;
+		this.existenciaProd= 0;
+		this.idCategoria=0;
+		this.stockMax=0;
+		this.stockMax=0;
+		this.iva=0;
+		this.precioCompra=0;
+		this.precioVenta=0;
+		this.estadoProd = 0;
+		
+		PrimeFaces.current().executeScript("PF('nuevoProducto').hide();");
+		PrimeFaces.current().ajax().update(":form:productos");
+
+	}
+
+	public void reset() {
+		PrimeFaces.current().resetInputs(":dialogNuevoProducto:productoGrid");
+	}
+
 	public List<Producto> getListarProductos() {
 		ProductoService productoService = new ProductoService();
 		return productoService.list();
@@ -57,8 +98,16 @@ public class ProductoMB {
 	}
 
 	public void editarMsj(RowEditEvent<Producto> event) {
-		FacesMessage msj = new FacesMessage("Product Edited", String.valueOf(event.getObject().getClass()));
-		FacesContext.getCurrentInstance().addMessage(null, msj);
+		FacesMessage msj = new FacesMessage("Product Edited", String.valueOf(event.getObject().getId()));
+		FacesContext.getCurrentInstance().addMessage("ID:", msj);
+	}
+
+	public void editarProducto(RowEditEvent<Producto> event) {
+		System.out.println("Editar producto: " + event.getObject().getId());
+		Producto productoEditado = event.getObject();
+		System.out.println("producto"+productoEditado);
+		productoService.update(productoEditado);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Producto editado"));
 	}
 
 	public void onRowCancel(RowEditEvent<Producto> event) {
@@ -74,9 +123,14 @@ public class ProductoMB {
 		PrimeFaces.current().ajax().update("form:msjs", "form:productos");
 	}
 
-	// public void setListaProductos(DataModel listaProductos) {
-	// this.listaProductos = listaProductos;
-	// }
+	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
+	}
+
+	public void showInfo() {
+		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operación exitosa");
+	}
+
 
 	public int getId() {
 		return id;
@@ -138,7 +192,7 @@ public class ProductoMB {
 		return iva;
 	}
 
-	public void setIva(int iva) {
+	public void setIva(byte iva) {
 		this.iva = iva;
 	}
 
@@ -174,7 +228,7 @@ public class ProductoMB {
 		this.listaProductos = listaProductos;
 	}
 
-	public void setEstadoProd(int estadoProd) {
+	public void setEstadoProd(byte estadoProd) {
 		this.estadoProd = estadoProd;
 	}
 
