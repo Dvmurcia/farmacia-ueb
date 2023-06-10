@@ -1,12 +1,15 @@
 package com.unbosque.bean;
 
 import java.util.Date;
-import java.sql.Timestamp;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import org.jboss.logging.Logger;
 import org.primefaces.PrimeFaces;
@@ -16,6 +19,7 @@ import com.unbosque.entity.Auditoria;
 import com.unbosque.service.AuditoriaService;
 import com.unbosque.service.UsuarioService;
 import com.unbosque.utils.EncodeSHA256;
+import com.unbosque.utils.IdentificadorIP;
 
 @ManagedBean
 @SessionScoped
@@ -26,7 +30,7 @@ public class LoginMB {
 	private int intentos = 0;
 	private Usuario usuarioLogueado;
 
-	public String ingresar() {
+	public void ingresar() {
 		UsuarioService usuarioService = new UsuarioService();
 		this.usuarioLogueado = usuarioService.getUsuario(usuario);
 		EncodeSHA256 encoder = new EncodeSHA256();
@@ -51,25 +55,36 @@ public class LoginMB {
 				// una vista, cajero admis y gestor dueño de inventario
 				// Debes dejar el contador de intentos en 0, tanto el atributo this.intentos
 				// como en la tabla
-				registrarAuditoriaLogin(usuarioLogueado.getLogin());
 
-				switch (usuarioLogueado.getTipoUsuario()) {
-				case "A": // Direccionar a la pagina de administrador
-					return "Login";
+				try {
+					registrarAuditoriaLogin(usuarioLogueado.getLogin());
+					ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
-				case "C": // Direccionar a la pagina de cajero
-					return "Cajero";
+					System.out.println("Tipo usuario: " + usuarioLogueado.getTipoUsuario());
 
-				case "G": // Direccionar a la pagina de gestor
-					return "GestorInv";
+					switch (usuarioLogueado.getTipoUsuario()) {
+					case "A": // Direccionar a la pagina de administrador
+						externalContext.redirect("Administrador.xhtml");
+						break;
 
-				default:
-					// Mensaje que el usuario no tiene un rol valido
-					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"El usuario no tiene un rol valido ", "Sin rol el usuario.");
-					PrimeFaces.current().dialog().showMessageDynamic(message);
+					case "C": // Direccionar a la pagina de cajero
+						externalContext.redirect("Cajero.xhtml");
+						break;
 
-					break;
+					case "G": // Direccionar a la pagina de gestor
+						externalContext.redirect("GestorInv.xhtml");
+						break;
+
+					default:
+						// Mensaje que el usuario no tiene un rol valido
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+								"El usuario no tiene un rol valido ", "Sin rol el usuario.");
+						PrimeFaces.current().dialog().showMessageDynamic(message);
+
+						break;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 
 			} else {
@@ -112,28 +127,32 @@ public class LoginMB {
 		}
 
 		LOGGER.info("Intentos de logueo: " + this.intentos);
-		return null;
 	}
 
 	// creo un metodo que se llame registrarAuditoriaLogin
 	// y le paso a eso el login del usuario logueado (usuarioLogueado.getLogin)
 	public void registrarAuditoriaLogin(String login) {
-		AuditoriaService auditoriaService = new AuditoriaService();
-		Auditoria auditoria = new Auditoria();
-		Date fechaAuditoria = new Date();
-		Timestamp timeStamp = new Timestamp(fechaAuditoria.getTime());
-		// y empiezo a llenar los datos que me pide la tabla 
-		// id valor numerico consecutivo SE GENERA AUTOMATICO
+		try {
+			AuditoriaService auditoriaService = new AuditoriaService();
+			IdentificadorIP ip = new IdentificadorIP();
+			Auditoria auditoria = new Auditoria();
+			// y empiezo a llenar los datos que me pide la tabla
+			// id valor numerico consecutivo SE GENERA AUTOMATICO
 
-		// id_usuario setearle el usuario
-		auditoria.setIdUsuario(login);
-		auditoria.setFechaAuditoria(timeStamp); // fecha dateTime
-		auditoria.setAccionAuditoria(login); // accion varchar long (L)
-		auditoria.setIdTabla(0); // id_tabla null;	
-		auditoria.setNombreTabla(null); // nombre_tabla null;
+			// id_usuario setearle el usuario
+			auditoria.setIdUsuario(login);
+			auditoria.setFechaAuditoria(new Date()); // fecha dateTime
+			auditoria.setAccionAuditoria("L"); // accion varchar long (L)
+			auditoria.setIdTabla(0); // id_tabla null;
+			auditoria.setNombreTabla(null); // nombre_tabla null;
+			auditoria.setDireccionIp(ip.getIP());
 
-		
-		auditoriaService.save(auditoria);
+			auditoriaService.save(auditoria);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public String getUsuario() {
