@@ -7,16 +7,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
 import javax.inject.Inject;
 
-import com.unbosque.entity.Parametro;
 import com.unbosque.entity.Producto;
 import com.unbosque.service.ProductoService;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.RowEditEvent;
 
 @ManagedBean
@@ -30,11 +26,12 @@ public class ProductoMB {
 	private int idCategoria;
 	private int stockMin;
 	private int stockMax;
-	private byte iva;
+	//private byte iva;
+	private Integer iva;
 	private int precioVenta;
 	private int precioCompra;
-	private byte estadoProd;
-
+	//private byte estadoProd;
+	private Integer estadoProd;
 	private Producto producto;
 	private List<Producto> listaProductos;
 	private Producto prodSeleccionado;
@@ -48,37 +45,41 @@ public class ProductoMB {
 		this.listaProductos = getListarProductos();
 
 	}
+	
+	public void testBtn() {
+		System.out.println("Prueba ejecucion boton");
+	}
 
-	public void crearProducto() {
+	public void nuevoProducto() {
 		System.out.println("creando producto...");
 		Producto nuevoProducto = new Producto();
-		
+
 		nuevoProducto.setReferenciaProducto(refProducto);
 		nuevoProducto.setDescripcionProducto(descripcionProd);
 		nuevoProducto.setExistenciaProducto(existenciaProd);
 		nuevoProducto.setIdCategoria(idCategoria);
 		nuevoProducto.setStockMinimo(stockMin);
 		nuevoProducto.setStockMaximo(stockMax);
-		nuevoProducto.setTieneIva(iva);
+		nuevoProducto.setTieneIva(iva.byteValue());
 		nuevoProducto.setPrecioVenta(precioVenta);
 		nuevoProducto.setPrecioCompra(precioCompra);
-		nuevoProducto.setEstadoProducto(estadoProd);
+		nuevoProducto.setEstadoProducto(estadoProd.byteValue());
 
 		this.productoService.save(nuevoProducto);
 		System.out.println("Producto agregado");
 		this.listaProductos = this.productoService.list();
-		
-		this.refProducto=null;
-		this.descripcionProd= null;
-		this.existenciaProd= 0;
-		this.idCategoria=0;
-		this.stockMax=0;
-		this.stockMax=0;
-		this.iva=0;
-		this.precioCompra=0;
-		this.precioVenta=0;
+
+		this.refProducto = null;
+		this.descripcionProd = null;
+		this.existenciaProd = 0;
+		this.idCategoria = 0;
+		this.stockMax = 0;
+		this.stockMax = 0;
+		this.iva = 0;
+		this.precioCompra = 0;
+		this.precioVenta = 0;
 		this.estadoProd = 0;
-		
+
 		PrimeFaces.current().executeScript("PF('nuevoProducto').hide();");
 		PrimeFaces.current().ajax().update(":form:productos");
 
@@ -105,7 +106,7 @@ public class ProductoMB {
 	public void editarProducto(RowEditEvent<Producto> event) {
 		System.out.println("Editar producto: " + event.getObject().getId());
 		Producto productoEditado = event.getObject();
-		System.out.println("producto"+productoEditado);
+		System.out.println("producto" + productoEditado);
 		productoService.update(productoEditado);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Producto editado"));
 	}
@@ -128,9 +129,8 @@ public class ProductoMB {
 	}
 
 	public void showInfo() {
-		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "OperaciÃ³n exitosa");
+		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operación exitosa");
 	}
-
 
 	public int getId() {
 		return id;
@@ -177,7 +177,7 @@ public class ProductoMB {
 	}
 
 	public void setStockMin(int stockMin) {
-		stockMin = stockMin;
+		this.stockMin = stockMin;
 	}
 
 	public int getStockMax() {
@@ -185,14 +185,14 @@ public class ProductoMB {
 	}
 
 	public void setStockMax(int stockMax) {
-		stockMax = stockMax;
+		this.stockMax = stockMax;
 	}
 
-	public int getIva() {
+	public Integer getIva() {
 		return iva;
 	}
 
-	public void setIva(byte iva) {
+	public void setIva(Integer iva) {
 		this.iva = iva;
 	}
 
@@ -212,8 +212,12 @@ public class ProductoMB {
 		this.precioCompra = precioCompra;
 	}
 
-	public int getEstadoProd() {
+	public Integer getEstadoProd() {
 		return estadoProd;
+	}
+
+	public void setEstadoProd(Integer estadoProd) {
+		this.estadoProd = estadoProd;
 	}
 
 	public Producto getProdSeleccionado() {
@@ -226,10 +230,6 @@ public class ProductoMB {
 
 	public void setListaProductos(List<Producto> listaProductos) {
 		this.listaProductos = listaProductos;
-	}
-
-	public void setEstadoProd(byte estadoProd) {
-		this.estadoProd = estadoProd;
 	}
 
 	public Producto getProducto() {
