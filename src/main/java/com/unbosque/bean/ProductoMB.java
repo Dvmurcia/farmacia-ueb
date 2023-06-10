@@ -117,6 +117,7 @@ public class ProductoMB {
 	}
 
 	public void eliminarProd() {
+		System.out.println("eliminando: " +  this.prodSeleccionado);
 		this.productoService.remove(this.prodSeleccionado);
 		this.listaProductos.remove(this.prodSeleccionado);
 		this.prodSeleccionado = null;
