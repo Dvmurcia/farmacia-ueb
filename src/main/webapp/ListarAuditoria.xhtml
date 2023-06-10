@@ -46,6 +46,31 @@
 				</f:facet>
 			</p:column>
 		</p:dataTable>
+		<div class="inventario">
+			<p:dataTable id="productos" var="producto"
+				value="#{AuditoriaMB.listarAuditoria}" showGridlines="true"
+				editable="true">
+
+				<p:column headerText="ID">
+					<h:outputText value="#{producto.id}" />
+				</p:column>
+				<p:column headerText="Referencia Producto">
+					<h:outputText value="#{producto.referenciaProducto}" />
+				</p:column>
+				<p:column headerText="Descripcion Producto">
+					<h:outputText value="#{producto.descripcionProducto}" />
+				</p:column>
+				<p:column headerText="Existencia producto">
+					<h:outputText value="#{producto.existenciaProducto}" />
+				</p:column>
+				<p:column headerText="ID Categoria">
+					<h:outputText
+						value="#{producto.idCategoria}" />
+				</p:column>
+				
+
+			</p:dataTable>
+		</div>
 	</h:form>
 </div>
 

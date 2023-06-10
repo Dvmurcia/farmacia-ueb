@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>Administrador</title>
+</h:head>
+<h:body>
+<h1>Administrador</h1>
+<div class="card">
+	<p:growl id="growl" showDetail="true" />
+	<h2>Parámetros</h2>
+	<h:form id="form">
+		<p:growl id="msjs" showDetail="true" />
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+					update=":nuevoParametro" action="limpiarParametroMB.reset()"
+					onclick="PF('nuevoParametro').show()">
+					<p:ajax update="dialogNuevoParametro:parametroGrid"
+						resetValues="true" />
+				</p:commandButton>
+				<p:button value="Estadistica" styleClass="ui-button-help" />
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+					styleClass="ui-button-danger" ajax="false">
+					<p:dataExporter type="pdf" target="dt-parametros"
+						fileName="Parametros" />
+				</p:commandButton>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<p:dataTable id="dt-parametros" var="parametro"
+			value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
+			showGridlines="true" editable="true">
+			<p:ajax event="rowEdit" action="#{listarParametroMB.editarPara}"
+				listener="#{listarParametroMB.editarPara}" update=":form:dt-parametros  " />
+
+
+			<p:ajax event="rowEditCancel"
+				listener="#{listarParametroMB.onRowCancel}" />
+
+			<p:column headerText="Identificador">
+				<h:outputText value="#{parametro.id}" />
+			</p:column>
+			<p:column headerText="Nombre del parametro">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{parametro.nombreParametro}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText id="InpNombreParametro"
+							value="#{parametro.nombreParametro}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Descripcion">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{parametro.descripcionParametro}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText id="InpDescripcionParametro"
+							value="#{parametro.descripcionParametro}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Valor del parametro">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{parametro.valorParametro}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText id="InpValorParametro"
+							value="#{parametro.valorParametro}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Estado">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{parametro.estadoParametro}" />
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText id="InpEstado" value="#{parametro.estadoParametro}"
+							style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Editar"
+				styleClass="edit-button rounded-button ui-button-success"
+				exportable="false">
+				<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+					saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
+			</p:column>
+
+			<p:column headerText="Eliminar" exportable="false">
+				<p:commandButton icon="pi pi-trash"
+					styleClass="ui-button-warning rounded-button" process="@this"
+					oncomplete="PF('eliminar').show()">
+					<f:setPropertyActionListener value="#{parametro}"
+						target="#{listarParametroMB.parametroSelec}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+	<h:form id="dialogNuevoParametro">
+		<p:dialog header="Nuevo Parametro" widgetVar="nuevoParametro"
+			showEffect="fade" modal="true" onShow="#{limpiarParametroMB.reset()}">
+			<p:panelGrid id="parametroGrid" columns="2" layout="grid"
+				columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+				<p:outputLabel for="nombreParametro" value="Nombre del Parámetro:" />
+				<p:inputText id="nombreParametro"
+					value="#{listarParametroMB.nombreParametro}" required="true" />
+
+				<p:outputLabel for="descripcionParametro"
+					value="Descripcion del Parámetro:" />
+				<p:inputText id="descripcionParametro"
+					value="#{listarParametroMB.descripcionParametro}" required="true" />
+
+				<p:outputLabel for="valorParametro" value="Valor del Parametro" />
+				<p:inputText id="valorParametro"
+					value="#{listarParametroMB.valorParametro}" required="true" />
+
+				<p:outputLabel for="estadoParametro" value="Estado" />
+				<p:selectOneMenu id="estadoParametro" style="width: 100%;"
+					value="#{listarParametroMB.estadoParametro}">
+					<f:selectItem itemLabel="Activo" itemValue="1" />
+					<f:selectItem itemLabel="Inactivo" itemValue="0" />
+				</p:selectOneMenu>
+			</p:panelGrid>
+
+			<f:facet name="footer">
+				<p:commandButton type="button" value="Cancelar"
+					styleClass="ui-button-flat mr-2" style="width: 6rem"
+					update="parametroGrid" process="@this"
+					action="#{listararParametroMB.reset()}"
+					onclick="PF('nuevoParametro').hide()" resetValues="true">
+					<p:ajax update="parametroGrid" resetValues="true" />
+				</p:commandButton>
+				<p:commandButton value="Agregar" style="width: 6rem"
+					action="#{listarParametroMB.crearParametro}" update="growl"
+					process="@form" ajax="true"
+					actionListener="#{listarParametroMB.showInfo}" resetValues="true" />
+			</f:facet>
+		</p:dialog>
+	</h:form>
+	<h:form id="dialogs">
+		<p:confirmDialog widgetVar="eliminar" showEffect="fade" width="300"
+			message="¿Seguro que desea eliminar el parametro?"
+			header="Confirmacion" severity="warn">
+			<p:commandButton value="Si" icon="pi pi-check"
+				actionListener="#{listarParametroMB.eliminarPara}" process="@this"
+				oncomplete="PF('eliminar').hide()" />
+			<p:commandButton value="No" type="button"
+				styleClass="ui-button-secondary" icon="pi pi-times"
+				onclick="PF('eliminar').hide()" />
+		</p:confirmDialog>
+	</h:form>
+</div >
+<div class="card">
+<h2>Auditoria</h2>
+	<h:form>
+		<p:dataTable var="customer" value="#{dtFilterView.customers1}"
+			widgetVar="customersTable"
+			emptyMessage="No customers found with given criteria"
+			filteredValue="#{dtFilterView.filteredCustomers1}"
+			globalFilterOnly="#{dtFilterView.globalFilterOnly}">
+			<p:column field="date" headerText="Join Date"
+				filterMatchMode="between">
+				<f:facet name="filter">
+					<p:datePicker selectionMode="range"
+						onchange="PF('customersTable2').filter()"
+						styleClass="ui-custom-filter" />
+				</f:facet>
+			</p:column>
+			<p:column headerText="Name" sortBy="#{customer.name}"
+				filterBy="#{auditoria.id_usuario}" filterMatchMode="contains">
+				<h:outputText value="#{auditoria.id_usuario}" />
+			</p:column>
+
+			<p:column field="fecha_auditoria" headerText="Fecha Auditoria"
+				filterMatchMode="exact" sortBy="#{auditoria.fecha_auditoria}">
+				<f:facet name="filter">
+					<p:selectOneMenu onchange="PF('customersTable').filter()"
+						styleClass="ui-custom-filter">
+						<f:selectItem itemLabel="All" itemValue="#{null}"
+							noSelectionOption="true" />
+						<f:selectItems value="#{dtFilterView.representatives}" />
+					</p:selectOneMenu>
+				</f:facet>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+
+
+</div>
+
+</h:body>
+</html>
