@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<title>Lista de Usuarios</title>
+</h:head>
+<h:body>
+	<h1>Usuario</h1>
+	<h:form id="form">
+		<p:growl id="msjs" showDetail="true" />
+		<p:toolbar>
+			<p:toolbarGroup>
+				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+					update=":dialogNuevoUsuario" action="#{usuarioMB.reset()}"
+					onclick="PF('nuevoUsuario').show()">
+					<p:ajax update="dialogNuevoUsuario:usuarioGrid" resetValues="true" />
+				</p:commandButton>
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+					styleClass="ui-button-danger" ajax="false">
+					<p:dataExporter type="pdf" target="usuarios" fileName="Usuarios" />
+				</p:commandButton>
+
+			</p:toolbarGroup>
+		</p:toolbar>
+		<div class="usuarios">
+			<p:dataTable id="usuarios" var="usuario"
+				value="#{usuarioMB.listaUsuarios}" showGridlines="true"
+				editable="true">
+
+				<p:ajax event="rowEdit" listener="#{usuarioMB.editarUsuario}"
+					update=":form:usuarios" />
+
+				<p:ajax event="rowEditCancel" listener="#{usuarioMB.onRowCancel}"
+					update=":form:msjs" />
+
+				<p:column headerText="Login">
+					<h:outputText value="#{usuario.login}" />
+				</p:column>
+
+				<p:column headerText="Nombre ">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{usuario.nombreUsuario}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpNombreUsuario"
+								value="#{usuario.nombreUsuario}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Apellido">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{usuario.apellidoUsuario}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpApellidoUsuario"
+								value="#{usuario.apellidoUsuario}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Correo Usuario">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{usuario.correoUsuario}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpCorreoUsuario"
+								value="#{usuario.correoUsuario}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+
+				<p:column headerText="Tipo Usuario">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{usuario.tipoUsuario}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpTipoUsuario" value="#{usuario.tipoUsuario}"
+								style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Estado Usuario">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{usuario.estadoUsusario}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpEstadoUsuario"
+								value="#{usuario.estadoUsusario}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Cantidad Intentos">
+					<h:outputText value="#{usuario.cantIntentos}" />
+				</p:column>
+
+
+				<p:column headerText="Fecha Registro">
+					<h:outputText value="#{usuario.fechaRegistro}" pattern="yyyy-MM-dd" />
+				</p:column>
+
+
+				<p:column headerText="Fecha Ultima Clave">
+					<h:outputText value="#{usuario.fechaUtlimaClave}" />
+				</p:column>
+
+
+				<p:column headerText="Editar"
+					styleClass="edit-button rounded-button ui-button-success"
+					exportable="false">
+					<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+						saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
+				</p:column>
+
+				<p:column headerText="Eliminar" exportable="false">
+					<p:commandButton icon="pi pi-trash"
+						styleClass="ui-button-warning rounded-button" process="@this"
+						oncomplete="PF('eliminar').show()">
+
+						<f:setPropertyActionListener value="#{usuario}"
+							target="#{usuarioMB.usuarioSeleccionado}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</div>
+	</h:form>
+	<h:form id="dialogNuevoUsuario">
+		<p:dialog id="nuevoUsuario" widgetVar="nuevoUsuario" modal="true"
+			resizable="false" draggable="false">
+			<p:panelGrid id="usuarioGrid" columns="2" layout="grid">
+
+
+				<p:outputLabel for="nombreUsuario" value="Nombre Usuario:" />
+				<p:inputText id="nombreUsuario" value="#{usuarioMB.nombreUsuario}" />
+
+				<p:outputLabel for="apellidoUsuario" value="Apellido del usuario:" />
+				<p:inputText id="apellidoUsuario"
+					value="#{usuarioMB.apellidoUsuario}" />
+
+				<p:outputLabel for="correoUsuario" value="Correo de Usuario:" />
+				<p:inputText id="correoUsuario" value="#{usuarioMB.correoUsuario}" />
+
+				<p:outputLabel for="tipoUsuario" value="Tipo Usuario:" />
+				<p:selectOneMenu id="tipoUsuario" style="width: 100%;"
+					value="#{usuarioMB.tipoUsuario}">
+					<f:selectItem itemLabel="A" itemValue="0" />
+					<f:selectItem itemLabel="G" itemValue="1" />
+					<f:selectItem itemLabel="C" itemValue="2" />
+				</p:selectOneMenu>
+
+				<p:outputLabel for="estadoUsuario" value="Estado Usuario:" />
+				<p:selectOneMenu id="estadoUsuario" style="width: 100%;"
+					value="#{usuarioMB.estadoUsusario}">
+					<f:selectItem itemLabel="Activo" itemValue="1" />
+				</p:selectOneMenu>
+
+				<h:form>
+					<p:outputLabel for="fechaRegistro" value="Fecha Registro:" />
+					<p:calendar id="fechaRegistro" value="#{usuarioMB.fechaRegistro}"
+						pattern="yyyy-MM-dd" showButtonPanel="true">
+						<p:ajax event="dateSelect" listener="#{usuarioMB.fechaRegistro}" />
+					</p:calendar>
+				</h:form>
+			</p:panelGrid>
+
+			<f:facet name="footer">
+				<p:commandButton type="button" value="Cancelar"
+					styleClass="ui-button-flat mr-2" style="width: 6rem"
+					update="usuarioGrid" process="@this" action="#{usuarioMB.reset()}"
+					onclick="PF('nuevoUsuario').hide()" resetValues="true">
+					<p:ajax update="usuarioGrid" resetValues="true" />
+				</p:commandButton>
+				<p:commandButton value="Agregar" style="width: 6rem"
+					action="#{usuarioMB.crearUsuario}" update=":form:msjs"
+					process="@form" ajax="true" actionListener="#{usuarioMB.showInfo}"
+					resetValues="true" />
+			</f:facet>
+		</p:dialog>
+	</h:form>
+
+
+
+	<h:form id="dialogs">
+		<p:confirmDialog widgetVar="eliminar"
+			message="¿Está seguro que desea eliminar este usuario?"
+			header="Confirmación" severity="alert" appendToBody="true">
+			<p:commandButton value="Sí" update=":form:usuarios"
+				oncomplete="PF('eliminar').hide()" process="@this"
+				action="#{usuarioMB.eliminarUsuario()}" />
+			<p:commandButton value="No" onclick="PF('eliminar').hide()"
+				type="button" styleClass="ui-button-danger" />
+		</p:confirmDialog>
+	</h:form>
+</h:body>
+</html>
