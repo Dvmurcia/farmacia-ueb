@@ -23,6 +23,7 @@ public class Usuario implements Serializable {
 
 	@Column(name="cant_intentos")
 	private int cantIntentos;
+	
 	@Column(name="clave")
 	private String clave;
 
@@ -128,5 +129,6 @@ public class Usuario implements Serializable {
 	public void setTipoUsuario(String tipoUsuario) {
 		this.tipoUsuario = tipoUsuario;
 	}
+
 
 }
