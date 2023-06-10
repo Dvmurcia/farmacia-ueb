@@ -13,7 +13,11 @@
 		<p:toolbar>
 			<p:toolbarGroup>
 				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
-					onclick="PF('nuevoProducto').show()" />
+					update=":nuevoProducto" action="productoMB.reset()"
+					onclick="PF('nuevoProducto').show()">
+					<p:ajax update="dialogNuevoProducto:productoGrid"
+						resetValues="true" />
+				</p:commandButton>
 			</p:toolbarGroup>
 			<p:toolbarGroup align="right">
 				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
@@ -28,8 +32,8 @@
 				value="#{productoMB.listaProductos}" showGridlines="true"
 				editable="true">
 
-				<p:ajax event="rowEdit" listener="#{productoMB.editarMsj}"
-					update=":form:msjs" />
+				<p:ajax event="rowEdit" action="#{productoMB.editarProducto}"
+					listener="#{productoMB.editarProducto}" update=":form:productos  " />
 
 				<p:ajax event="rowEditCancel" listener="#{productoMB.onRowCancel}"
 					update=":form:msjs" />
@@ -166,13 +170,16 @@
 					</p:cellEditor>
 				</p:column>
 
-				<p:column styleClass="edit-button rounded-button ui-button-success"
+				<p:column headerText="Editar"
+					styleClass="edit-button rounded-button ui-button-success"
 					exportable="false">
 					<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-						saveTitle="Save Row" />
+						saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
 				</p:column>
 
-				<p:column exportable="false">
+
+
+				<p:column headerText="Eliminar" exportable="false">
 					<p:commandButton icon="pi pi-trash"
 						styleClass="ui-button-warning rounded-button" process="@this"
 						oncomplete="PF('eliminar').show()">
@@ -184,9 +191,9 @@
 			</p:dataTable>
 		</div>
 	</h:form>
-	<h:form>
+	<h:form id="dialogNuevoProducto">
 		<p:dialog header="Nuevo Producto" widgetVar="nuevoProducto"
-			showEffect="fade" modal="true">
+			showEffect="fade" modal="true" onShow="#{productoMB.reset()}">
 			<p:panelGrid id="productoGrid" columns="4" layout="grid"
 				columnClasses="ui-grid-col-6,ui-grid-col-6">
 
@@ -214,8 +221,7 @@
 				<p:outputLabel for="stockMax" value="Stock Maximo:" />
 				<p:inputText id="stockMax" value="#{productoMB.stockMax}" />
 
-				<p:outputLabel for="tieneIva" value="Tiene IVA:" />
-				<p:inputText id="tieneIva" value="#{productoMB.iva}" />
+
 
 				<p:outputLabel for="precioVenta" value="Precio de venta:" />
 				<p:inputText id="precioVenta" value="#{productoMB.precioVenta}" />
@@ -223,15 +229,35 @@
 				<p:outputLabel for="precioCompra" value="Precio de compra:" />
 				<p:inputText id="precioCompra" value="#{productoMB.precioCompra}" />
 
-				<p:outputLabel for="estadoProd" value="Estado del producto:" />
-				<p:inputText id="estadoProd" value="#{productoMB.estadoProd}" />
+				<p:outputLabel for="tieneIva" value="Tiene IVA:" />
+				<p:selectOneMenu id="tieneIva" style="width: 90%;"
+					value="#{productpoMB.iva}">
+					<f:selectItem itemLabel="Si" itemValue="1" />
+					<f:selectItem itemLabel="No" itemValue="0" />
+				</p:selectOneMenu>
+				<p:outputLabel for="estadoProd" value="Estado Producto" />
+				<p:selectOneMenu id="estadoProd" style="width: 100%;"
+					value="#{productpoMB.estadoProd}">
+					<f:selectItem itemLabel="Activo" itemValue="1" />
+					<f:selectItem itemLabel="Inactivo" itemValue="0" />
+				</p:selectOneMenu>
+
 			</p:panelGrid>
+
 			<f:facet name="footer">
 				<p:commandButton type="button" value="Cancelar"
 					styleClass="ui-button-flat mr-2" style="width: 6rem"
-					onclick="PF('nuevoProducto').hide()" />
-				<p:commandButton type="button" value="Agregar" style="width: 6rem" />
+					update="productoGrid" process="@this"
+					action="#{productoMB.reset()}" onclick="PF('nuevoProducto').hide()"
+					resetValues="true">
+					<p:ajax update="productoGrid" resetValues="true" />
+				</p:commandButton>
+				<p:commandButton type="button" value="Agregar" style="width: 6rem"
+					action="#{productoMB.crearProducto()}" update="growl" process="@form"
+					ajax="true" actionListener="#{productoMB.showInfo}"
+					resetValues="true" />
 			</f:facet>
+
 		</p:dialog>
 	</h:form>
 
