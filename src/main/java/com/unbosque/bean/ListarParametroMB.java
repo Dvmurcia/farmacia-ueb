@@ -10,8 +10,10 @@ import javax.inject.Inject;
 
 import org.jboss.logging.Logger;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.RowEditEvent;
 
 import com.unbosque.entity.Parametro;
+import com.unbosque.entity.Producto;
 import com.unbosque.service.ParametroService;
 
 @ManagedBean
@@ -19,6 +21,9 @@ import com.unbosque.service.ParametroService;
 public class ListarParametroMB {
 	private final static Logger LOGGER = Logger.getLogger(ListarParametroMB.class.getName());
 	private List<Parametro> parametros;
+	private Parametro parametro;
+	private Parametro parametroSelec;
+	
 
 	// Campos del formulario de creacion
 	private String nombreParametro;
@@ -60,13 +65,34 @@ public class ListarParametroMB {
 		PrimeFaces.current().ajax().update(":form:dt-parametros");
 		// TODO Pendiente hacer registro de auditoria
 	}
+	public void editarPara(RowEditEvent<Parametro> event) {
+		System.out.println("editando...");
+		System.out.println("Editar parametro: " + event.getObject().getId());
+		Parametro parametroEditado = event.getObject();
+		System.out.println(parametroEditado + ": Parametro");
+		parametroService.update(parametroEditado);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Parametro editado"));
+	}
+	
+	public void onRowCancel(RowEditEvent<Parametro> event) {
+		FacesMessage msj = new FacesMessage("Se cancelo la edicion del parametro");
+		FacesContext.getCurrentInstance().addMessage(null, msj);
+	}
+	public void eliminarPara() {
+		System.out.println("eliminando: " + parametroSelec);
+		this.parametroService.remove(this.parametroSelec);
+		this.parametros.remove(this.parametroSelec);
+		this.parametroSelec = null;
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Producto eliminado"));
+		PrimeFaces.current().ajax().update("form:msjs","form:dt-parametros");
+	}
 
 	public void addMessage(FacesMessage.Severity severity, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(severity, summary, detail));
 	}
 
 	public void showInfo() {
-		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operación exitosa");
+		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operaciï¿½n exitosa");
 	}
 
 	public void showWarn() {
@@ -74,7 +100,7 @@ public class ListarParametroMB {
 	}
 
 	public void showError() {
-		addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al realizar la operación");
+		addMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error al realizar la operaciï¿½n");
 	}
 
 	public List<Parametro> getParametros() {
@@ -115,5 +141,25 @@ public class ListarParametroMB {
 
 	public void setEstadoParametro(Integer estadoParametro) {
 		this.estadoParametro = estadoParametro;
+	}
+
+	public Parametro getParametro() {
+		return parametro;
+	}
+
+	public void setParametro(Parametro parametro) {
+		this.parametro = parametro;
+	}
+
+	public Parametro getParametroSelec() {
+		return parametroSelec;
+	}
+
+	public void setParametroSelec(Parametro parametroSelec) {
+		this.parametroSelec = parametroSelec;
+	}
+
+	public void setParametros(List<Parametro> parametros) {
+		this.parametros = parametros;
 	}
 }
