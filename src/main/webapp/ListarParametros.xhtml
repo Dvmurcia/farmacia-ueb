@@ -50,7 +50,8 @@ h1 {
 			value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
 			showGridlines="true" editable="true">
 			<p:ajax event="rowEdit" action="#{listarParametroMB.editarPara}"
-				listener="#{listarParametroMB.editarPara}" update=":form:dt-parametros  " />
+				listener="#{listarParametroMB.editarPara}"
+				update=":form:dt-parametros  " />
 
 
 			<p:ajax event="rowEditCancel"
@@ -95,11 +96,17 @@ h1 {
 			<p:column headerText="Estado">
 				<p:cellEditor>
 					<f:facet name="output">
-						<h:outputText value="#{parametro.estadoParametro}" />
+						<h:outputText value="Activo"
+							rendered="#{parametro.estadoParametro == 1}" />
+						<h:outputText value="Inactivo"
+							rendered="#{parametro.estadoParametro == 0}" />
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText id="InpEstado" value="#{parametro.estadoParametro}"
-							style="width:100%" />
+						<p:selectOneMenu id="InpEstado" style="width: 100%;"
+							value="#{parametro.estadoParametro}">
+							<f:selectItem itemLabel="Activo" itemValue="1" />
+							<f:selectItem itemLabel="Inactivo" itemValue="0" />
+						</p:selectOneMenu>
 					</f:facet>
 				</p:cellEditor>
 			</p:column>

@@ -2,6 +2,7 @@ package com.unbosque.bean;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -19,6 +20,10 @@ import org.primefaces.event.CellEditEvent;
 import com.google.protobuf.TextFormat.ParseException;
 import com.unbosque.entity.Usuario;
 import com.unbosque.service.UsuarioService;
+import com.unbosque.utils.CorreoManager;
+import com.unbosque.utils.EncodeSHA256;
+
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
@@ -36,7 +41,7 @@ public class UsuarioMB {
 	private Date fechaUltimaClave;
 	private String nombreUsuario;
 	private String tipoUsuario;
-	
+
 	private Usuario usuario;
 	private List<Usuario> listaUsuarios;
 	private Usuario usuarioSeleccionado;
@@ -48,28 +53,44 @@ public class UsuarioMB {
 	private void init() {
 		this.usuarioService = new UsuarioService();
 		this.listaUsuarios = getListarUsuarios();
-		
+
 	}
 
 	public void crearUsuario() {
 		System.out.println("creando usuario...");
 		Usuario nuevoUsuario = new Usuario();
-
+		EncodeSHA256 encode = new EncodeSHA256();
+		String clavePlana = generarPassword();
+		try {
+			this.clave = encode.getStringEncoded(clavePlana);
+		} catch (NoSuchAlgorithmException e) {
+			this.clave = "Error generando clave";
+			e.printStackTrace();
+		}
+		
+		nuevoUsuario.setLogin(login);
 		nuevoUsuario.setApellidoUsuario(apellidoUsuario);
 		nuevoUsuario.setCantIntentos(cantIntentos);
 		nuevoUsuario.setClave(clave);
 		nuevoUsuario.setCorreoUsuario(correoUsuario);
 		nuevoUsuario.setCorreoUsuario(correoUsuario);
 		nuevoUsuario.setEstadoUsusario(estadoUsusario);
-		nuevoUsuario.setFechaRegistro(fechaRegistro);
-		nuevoUsuario.setFechaUtlimaClave(fechaRegistro);
+		nuevoUsuario.setFechaRegistro(new Date());
+		nuevoUsuario.setFechaUtlimaClave(new Date());
 		nuevoUsuario.setNombreUsuario(nombreUsuario);
 		nuevoUsuario.setTipoUsuario(tipoUsuario);
 
 		this.usuarioService.save(nuevoUsuario);
 		System.out.println("Usuario creado");
+		boolean correo = enviarCorreo(clavePlana);
+
+		if (correo) {
+			System.out.println("Correo enviado al usuario " + login);
+		}
+
 		this.listaUsuarios = this.usuarioService.list();
 
+		this.login = null;
 		this.apellidoUsuario = null;
 		this.cantIntentos = 0;
 		this.clave = null;
@@ -80,7 +101,7 @@ public class UsuarioMB {
 		this.nombreUsuario = null;
 		this.tipoUsuario = null;
 
-		PrimeFaces.current().executeScript("PF(´nuevoUsuario´).hide();");
+		PrimeFaces.current().executeScript("PF('nuevoUsuario').hide();");
 		PrimeFaces.current().ajax().update(":form:usuarios");
 
 	}
@@ -92,6 +113,12 @@ public class UsuarioMB {
 	public List<Usuario> getListarUsuarios() {
 		UsuarioService usuarioService = new UsuarioService();
 		return usuarioService.list();
+	}
+
+	public boolean enviarCorreo(String clavePlana) {
+		CorreoManager correoManager = new CorreoManager();
+		return correoManager.enviarCorreo(this.correoUsuario, this.login, clavePlana);
+
 	}
 
 	public List<Usuario> getListaUsuarios() {
@@ -130,7 +157,38 @@ public class UsuarioMB {
 	}
 
 	public void showInfo() {
-		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operación exitosa");
+		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operacion exitosa");
+	}
+	
+	private String generarPassword() {
+		String mayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+		String minusculas = "abcdefghijklmnopqrstuvwxyz";
+		String numbers = "0123456789";
+		String charPermitidos = mayusculas + minusculas + numbers;
+		Random random = new Random();
+		int longitudContrasena = random.nextInt(8 - 5 + 1) + 5;
+		StringBuilder contrasena = new StringBuilder();
+
+		// Asegurar al menos un n�mero, una letra mayuscula y una letra minuscula
+		contrasena.append(mayusculas.charAt(random.nextInt(mayusculas.length())));
+		contrasena.append(minusculas.charAt(random.nextInt(minusculas.length())));
+		contrasena.append(numbers.charAt(random.nextInt(numbers.length())));
+
+		for (int i = 3; i < longitudContrasena; i++) {
+			int randomIndex = random.nextInt(charPermitidos.length());
+			char randomChar = charPermitidos.charAt(randomIndex);
+			contrasena.append(randomChar);
+		}
+
+		// Mezclar los caracteres en la contrasena generada
+		for (int i = contrasena.length() - 1; i > 0; i--) {
+			int j = random.nextInt(i + 1);
+			char temp = contrasena.charAt(i);
+			contrasena.setCharAt(i, contrasena.charAt(j));
+			contrasena.setCharAt(j, temp);
+		}
+
+		return contrasena.toString();
 	}
 
 	public String getLogin() {
