@@ -74,8 +74,9 @@ public class ListarParametroMB {
 
 		PrimeFaces.current().executeScript("PF('nuevoParametro').hide();");
 		PrimeFaces.current().ajax().update(":form:dt-parametros");
-		// TODO Pendiente hacer registro de auditoria
-		generarAuditoria("I", nuevoParametro);
+		if (sesion.getUsuario() != null) {
+			generarAuditoria("I", nuevoParametro);
+		}
 	}
 
 	public void editarPara(RowEditEvent<Parametro> event) {
@@ -86,7 +87,9 @@ public class ListarParametroMB {
 		parametroService.update(parametroEditado);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Parametro editado"));
 
-		generarAuditoria("U", event.getObject());
+		if (sesion.getUsuario() != null) {
+			generarAuditoria("U", event.getObject());
+		}
 	}
 
 	public void onRowCancel(RowEditEvent<Parametro> event) {
@@ -101,8 +104,11 @@ public class ListarParametroMB {
 		this.parametroService.update(this.parametroSelec);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Estado del parametro cambiado"));
 		PrimeFaces.current().ajax().update("form:msjs", "form:dt-parametros");
+
+		if (sesion.getUsuario() != null) {
+			generarAuditoria("D", this.parametroSelec);
+		}
 	}
-	
 
 	private void generarAuditoria(String accion, Parametro elemento) {
 		try {
@@ -189,8 +195,6 @@ public class ListarParametroMB {
 	public void setParametro(Parametro parametro) {
 		this.parametro = parametro;
 	}
-
-	
 
 	public Parametro getParametroSelec() {
 		return parametroSelec;

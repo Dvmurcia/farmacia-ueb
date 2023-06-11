@@ -81,11 +81,20 @@
 				<p:column headerText="Tipo Usuario">
 					<p:cellEditor>
 						<f:facet name="output">
-							<h:outputText value="#{usuario.tipoUsuario}" />
+							<h:outputText value="Gestor de Inventario"
+								rendered="#{usuario.tipoUsuario == 'G'}" />
+							<h:outputText value="Cajero"
+								rendered="#{usuario.tipoUsuario == 'C'}" />
+							<h:outputText value="Administrador"
+								rendered="#{usuario.tipoUsuario == 'A'}" />
 						</f:facet>
 						<f:facet name="input">
-							<p:inputText id="InpTipoUsuario" value="#{usuario.tipoUsuario}"
-								style="width:100%" />
+							<p:selectOneMenu id="InpTipoUsuario" style="width: 100%;"
+								value="#{usuario.tipoUsuario}">
+								<f:selectItem itemLabel="Administrador" itemValue="A" />
+								<f:selectItem itemLabel="Gestor de Inventario" itemValue="G" />
+								<f:selectItem itemLabel="Cajero" itemValue="C" />
+							</p:selectOneMenu>
 						</f:facet>
 					</p:cellEditor>
 				</p:column>
@@ -93,11 +102,17 @@
 				<p:column headerText="Estado Usuario">
 					<p:cellEditor>
 						<f:facet name="output">
-							<h:outputText value="#{usuario.estadoUsusario}" />
+							<h:outputText value="Activo"
+								rendered="#{usuario.estadoUsusario == 1}" />
+							<h:outputText value="Inactivo"
+								rendered="#{usuario.estadoUsusario == 0}" />
 						</f:facet>
 						<f:facet name="input">
-							<p:inputText id="InpEstadoUsuario"
-								value="#{usuario.estadoUsusario}" style="width:100%" />
+							<p:selectOneMenu id="InpEstadoUsuario" style="width: 100%;"
+								value="#{usuario.estadoUsusario}">
+								<f:selectItem itemLabel="Activo" itemValue="1" />
+								<f:selectItem itemLabel="Inactivo" itemValue="0" />
+							</p:selectOneMenu>
 						</f:facet>
 					</p:cellEditor>
 				</p:column>
@@ -141,6 +156,8 @@
 			resizable="false" draggable="false">
 			<p:panelGrid id="usuarioGrid" columns="2" layout="grid">
 
+				<p:outputLabel for="loginUsuario" value="Login usuario:" />
+				<p:inputText id="loginUsuario" value="#{usuarioMB.login}" />
 
 				<p:outputLabel for="nombreUsuario" value="Nombre Usuario:" />
 				<p:inputText id="nombreUsuario" value="#{usuarioMB.nombreUsuario}" />
@@ -155,9 +172,9 @@
 				<p:outputLabel for="tipoUsuario" value="Tipo Usuario:" />
 				<p:selectOneMenu id="tipoUsuario" style="width: 100%;"
 					value="#{usuarioMB.tipoUsuario}">
-					<f:selectItem itemLabel="A" itemValue="0" />
-					<f:selectItem itemLabel="G" itemValue="1" />
-					<f:selectItem itemLabel="C" itemValue="2" />
+					<f:selectItem itemLabel="Administrador" itemValue="A" />
+					<f:selectItem itemLabel="Gestor de Inventario" itemValue="G" />
+					<f:selectItem itemLabel="Cajero" itemValue="C" />
 				</p:selectOneMenu>
 
 				<p:outputLabel for="estadoUsuario" value="Estado Usuario:" />
@@ -166,13 +183,6 @@
 					<f:selectItem itemLabel="Activo" itemValue="1" />
 				</p:selectOneMenu>
 
-				<h:form>
-					<p:outputLabel for="fechaRegistro" value="Fecha Registro:" />
-					<p:calendar id="fechaRegistro" value="#{usuarioMB.fechaRegistro}"
-						pattern="yyyy-MM-dd" showButtonPanel="true">
-						<p:ajax event="dateSelect" listener="#{usuarioMB.fechaRegistro}" />
-					</p:calendar>
-				</h:form>
 			</p:panelGrid>
 
 			<f:facet name="footer">

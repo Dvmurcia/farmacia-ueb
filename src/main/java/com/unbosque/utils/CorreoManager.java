@@ -20,10 +20,8 @@ public class CorreoManager {
 	private final String contrasena = "qqzittimwksylpwk";
 	private static Session sesion;
 
-	public boolean enviarCorreo(String destinatario, String usuario) {
+	public boolean enviarCorreo(String destinatario, String usuario, String contrasena) {
 		inicializar();
-		String contrasena = generarPassword();
-
 		try {
 			MimeMessage message = new MimeMessage(sesion);
 			message.setFrom(new InternetAddress(remitente));
@@ -41,37 +39,6 @@ public class CorreoManager {
 			LOGGER.error("Error al enviar el correo electronico: ", e);
 			return false;
 		}
-	}
-
-	private String generarPassword() {
-		String mayusculas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		String minusculas = "abcdefghijklmnopqrstuvwxyz";
-		String numbers = "0123456789";
-		String charPermitidos = mayusculas + minusculas + numbers;
-		Random random = new Random();
-		int longitudContrasena = random.nextInt(8 - 5 + 1) + 5;
-		StringBuilder contrasena = new StringBuilder();
-
-		// Asegurar al menos un número, una letra mayuscula y una letra minuscula
-		contrasena.append(mayusculas.charAt(random.nextInt(mayusculas.length())));
-		contrasena.append(minusculas.charAt(random.nextInt(minusculas.length())));
-		contrasena.append(numbers.charAt(random.nextInt(numbers.length())));
-
-		for (int i = 3; i < longitudContrasena; i++) {
-			int randomIndex = random.nextInt(charPermitidos.length());
-			char randomChar = charPermitidos.charAt(randomIndex);
-			contrasena.append(randomChar);
-		}
-
-		// Mezclar los caracteres en la contrasena generada
-		for (int i = contrasena.length() - 1; i > 0; i--) {
-			int j = random.nextInt(i + 1);
-			char temp = contrasena.charAt(i);
-			contrasena.setCharAt(i, contrasena.charAt(j));
-			contrasena.setCharAt(j, temp);
-		}
-
-		return contrasena.toString();
 	}
 
 	private void inicializar() {
