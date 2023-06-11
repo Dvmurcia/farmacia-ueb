@@ -7,207 +7,410 @@
 	<title>Administrador</title>
 </h:head>
 <h:body>
-<h1>Administrador</h1>
-<div class="card">
-	<p:growl id="growl" showDetail="true" />
-	<h2>Parámetros</h2>
-	<h:form id="form">
-		<p:growl id="msjs" showDetail="true" />
-		<p:toolbar>
-			<p:toolbarGroup align="left">
-				<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
-					update=":nuevoParametro" action="limpiarParametroMB.reset()"
-					onclick="PF('nuevoParametro').show()">
-					<p:ajax update="dialogNuevoParametro:parametroGrid"
-						resetValues="true" />
-				</p:commandButton>
-			</p:toolbarGroup>
-			<p:toolbarGroup align="right">
-				<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
-					styleClass="ui-button-danger" ajax="false">
-					<p:dataExporter type="pdf" target="dt-parametros"
-						fileName="Parametros" />
-				</p:commandButton>
-			</p:toolbarGroup>
-		</p:toolbar>
-		<p:dataTable id="dt-parametros" var="parametro"
-			value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
-			showGridlines="true" editable="true">
-			<p:ajax event="rowEdit" action="#{listarParametroMB.editarPara}"
-				listener="#{listarParametroMB.editarPara}" update=":form:dt-parametros  " />
+	<h1 align="center">Bienvenido Administrador</h1>
+	<div class="card">
+		<p:growl id="growl" showDetail="true" />
+		<h2>Parámetros</h2>
+		<h:form id="form">
+			<p:growl id="msjs" showDetail="true" />
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+					<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+						update=":nuevoParametro" action="limpiarParametroMB.reset()"
+						onclick="PF('nuevoParametro').show()">
+						<p:ajax update="dialogNuevoParametro:parametroGrid"
+							resetValues="true" />
+					</p:commandButton>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+						styleClass="ui-button-danger" ajax="false">
+						<p:dataExporter type="pdf" target="dt-parametros"
+							fileName="Parametros" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:dataTable id="dt-parametros" var="parametro"
+				value="#{listarParametroMB.parametros}" rowKey="#{parametro.id}"
+				showGridlines="true" editable="true">
+				<p:ajax event="rowEdit" action="#{listarParametroMB.editarPara}"
+					listener="#{listarParametroMB.editarPara}"
+					update=":form:dt-parametros  " />
 
 
-			<p:ajax event="rowEditCancel"
-				listener="#{listarParametroMB.onRowCancel}" />
+				<p:ajax event="rowEditCancel"
+					listener="#{listarParametroMB.onRowCancel}" />
 
-			<p:column headerText="Identificador">
-				<h:outputText value="#{parametro.id}" />
-			</p:column>
-			<p:column headerText="Nombre del parametro">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{parametro.nombreParametro}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText id="InpNombreParametro"
-							value="#{parametro.nombreParametro}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column headerText="Descripcion">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{parametro.descripcionParametro}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText id="InpDescripcionParametro"
-							value="#{parametro.descripcionParametro}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column headerText="Valor del parametro">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{parametro.valorParametro}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText id="InpValorParametro"
-							value="#{parametro.valorParametro}" style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column headerText="Estado">
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{parametro.estadoParametro}" />
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText id="InpEstado" value="#{parametro.estadoParametro}"
-							style="width:100%" />
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column headerText="Editar"
-				styleClass="edit-button rounded-button ui-button-success"
-				exportable="false">
-				<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-					saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
-			</p:column>
-
-			<p:column headerText="Eliminar" exportable="false">
-				<p:commandButton icon="pi pi-trash"
-					styleClass="ui-button-warning rounded-button" process="@this"
-					oncomplete="PF('eliminar').show()">
-					<f:setPropertyActionListener value="#{parametro}"
-						target="#{listarParametroMB.parametroSelec}" />
-				</p:commandButton>
-			</p:column>
-		</p:dataTable>
-	</h:form>
-
-	<h:form id="dialogNuevoParametro">
-		<p:dialog header="Nuevo Parametro" widgetVar="nuevoParametro"
-			showEffect="fade" modal="true" onShow="#{limpiarParametroMB.reset()}">
-			<p:panelGrid id="parametroGrid" columns="2" layout="grid"
-				columnClasses="ui-grid-col-6,ui-grid-col-6">
-
-				<p:outputLabel for="nombreParametro" value="Nombre del Parámetro:" />
-				<p:inputText id="nombreParametro"
-					value="#{listarParametroMB.nombreParametro}" required="true" />
-
-				<p:outputLabel for="descripcionParametro"
-					value="Descripcion del Parámetro:" />
-				<p:inputText id="descripcionParametro"
-					value="#{listarParametroMB.descripcionParametro}" required="true" />
-
-				<p:outputLabel for="valorParametro" value="Valor del Parametro" />
-				<p:inputText id="valorParametro"
-					value="#{listarParametroMB.valorParametro}" required="true" />
-
-				<p:outputLabel for="estadoParametro" value="Estado" />
-				<p:selectOneMenu id="estadoParametro" style="width: 100%;"
-					value="#{listarParametroMB.estadoParametro}">
-					<f:selectItem itemLabel="Activo" itemValue="1" />
-					<f:selectItem itemLabel="Inactivo" itemValue="0" />
-				</p:selectOneMenu>
-			</p:panelGrid>
-
-			<f:facet name="footer">
-				<p:commandButton type="button" value="Cancelar"
-					styleClass="ui-button-flat mr-2" style="width: 6rem"
-					update="parametroGrid" process="@this"
-					action="#{listararParametroMB.reset()}"
-					onclick="PF('nuevoParametro').hide()" resetValues="true">
-					<p:ajax update="parametroGrid" resetValues="true" />
-				</p:commandButton>
-				<p:commandButton value="Agregar" style="width: 6rem"
-					action="#{listarParametroMB.crearParametro}" update="growl"
-					process="@form" ajax="true"
-					actionListener="#{listarParametroMB.showInfo}" resetValues="true" />
-			</f:facet>
-		</p:dialog>
-	</h:form>
-	<h:form id="dialogs">
-		<p:confirmDialog widgetVar="eliminar" showEffect="fade" width="300"
-			message="¿Seguro que desea eliminar el parametro?"
-			header="Confirmacion" severity="warn">
-			<p:commandButton value="Si" icon="pi pi-check"
-				actionListener="#{listarParametroMB.eliminarPara}" process="@this"
-				oncomplete="PF('eliminar').hide()" />
-			<p:commandButton value="No" type="button"
-				styleClass="ui-button-secondary" icon="pi pi-times"
-				onclick="PF('eliminar').hide()" />
-		</p:confirmDialog>
-	</h:form>
-</div >
-<div class="card">
-
-	<h1>Auditoria</h1>
-	<h:form>
-
-		<div class="auditoria">
-			<p:dataTable id="auditoria" var="auditoria"
-				value="#{auditoriaMB.listaAuditorias}" showGridlines="true">
-
-				<p:column headerText="ID">
-					<h:outputText value="#{auditoria.id}" />
+				<p:column headerText="Identificador">
+					<h:outputText value="#{parametro.id}" />
 				</p:column>
-				<p:column headerText="ID Usuario" filterBy="#{auditoria.idUsuario}">
-					<h:outputText value="#{auditoria.idUsuario}" />
+				<p:column headerText="Nombre del parametro">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{parametro.nombreParametro}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpNombreParametro"
+								value="#{parametro.nombreParametro}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Descripcion">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{parametro.descripcionParametro}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpDescripcionParametro"
+								value="#{parametro.descripcionParametro}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Valor del parametro">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{parametro.valorParametro}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText id="InpValorParametro"
+								value="#{parametro.valorParametro}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Estado">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="Activo"
+								rendered="#{parametro.estadoParametro == 1}" />
+							<h:outputText value="Inactivo"
+								rendered="#{parametro.estadoParametro == 0}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu id="InpEstado" style="width: 100%;"
+								value="#{parametro.estadoParametro}">
+								<f:selectItem itemLabel="Activo" itemValue="1" />
+								<f:selectItem itemLabel="Inactivo" itemValue="0" />
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="Editar"
+					styleClass="edit-button rounded-button ui-button-success"
+					exportable="false">
+					<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+						saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
 				</p:column>
 
-				<p:column headerText="Fecha Auditoria">
-					<h:outputText value="#{auditoria.fechaAuditoria}" />
+				<p:column headerText="Eliminar" exportable="false">
+					<p:commandButton icon="pi pi-trash"
+						styleClass="ui-button-warning rounded-button" process="@this"
+						oncomplete="PF('eliminar').show()">
+						<f:setPropertyActionListener value="#{parametro}"
+							target="#{listarParametroMB.parametroSelec}" />
+					</p:commandButton>
 				</p:column>
-
-
-				<p:column headerText="ID Tabla">
-					<h:outputText value="#{auditoria.idTabla}" />
-				</p:column>
-
-				<p:column headerText="Nombre Tabla">
-					<h:outputText value="#{auditoria.nombreTabla}" />
-				</p:column>
-
-				<p:column headerText="Accion Auditoria">
-					<h:outputText value="Login"
-						rendered="#{auditoria.accionAuditoria == 'L'}" />
-					<h:outputText value="Actualizacion"
-						rendered="#{auditoria.accionAuditoria == 'U'}" />
-					<h:outputText value="Eliminacion"
-						rendered="#{auditoria.accionAuditoria == 'D'}" />
-					<h:outputText value="Insercion"
-						rendered="#{auditoria.accionAuditoria == 'I'}" />
-					<h:outputText value="Logout"
-						rendered="#{auditoria.accionAuditoria == 'E'}" />
-
-				</p:column>
-
-
 			</p:dataTable>
-		</div>
-	</h:form>
-</div>
+		</h:form>
+
+		<h:form id="dialogNuevoParametro">
+			<p:dialog header="Nuevo Parametro" widgetVar="nuevoParametro"
+				showEffect="fade" modal="true"
+				onShow="#{limpiarParametroMB.reset()}">
+				<p:panelGrid id="parametroGrid" columns="2" layout="grid"
+					columnClasses="ui-grid-col-6,ui-grid-col-6">
+
+					<p:outputLabel for="nombreParametro" value="Nombre del Parámetro:" />
+					<p:inputText id="nombreParametro"
+						value="#{listarParametroMB.nombreParametro}" required="true" />
+
+					<p:outputLabel for="descripcionParametro"
+						value="Descripcion del Parámetro:" />
+					<p:inputText id="descripcionParametro"
+						value="#{listarParametroMB.descripcionParametro}" required="true" />
+
+					<p:outputLabel for="valorParametro" value="Valor del Parametro" />
+					<p:inputText id="valorParametro"
+						value="#{listarParametroMB.valorParametro}" required="true" />
+
+					<p:outputLabel for="estadoParametro" value="Estado" />
+					<p:selectOneMenu id="estadoParametro" style="width: 100%;"
+						value="#{listarParametroMB.estadoParametro}">
+						<f:selectItem itemLabel="Activo" itemValue="1" />
+						<f:selectItem itemLabel="Inactivo" itemValue="0" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+
+				<f:facet name="footer">
+					<p:commandButton type="button" value="Cancelar"
+						styleClass="ui-button-flat mr-2" style="width: 6rem"
+						update="parametroGrid" process="@this"
+						action="#{listararParametroMB.reset()}"
+						onclick="PF('nuevoParametro').hide()" resetValues="true">
+						<p:ajax update="parametroGrid" resetValues="true" />
+					</p:commandButton>
+					<p:commandButton value="Agregar" style="width: 6rem"
+						action="#{listarParametroMB.crearParametro}" update="growl"
+						process="@form" ajax="true"
+						actionListener="#{listarParametroMB.showInfo}" resetValues="true" />
+				</f:facet>
+			</p:dialog>
+		</h:form>
+		<h:form id="dialogs">
+			<p:confirmDialog widgetVar="eliminar" showEffect="fade" width="300"
+				message="¿Seguro que desea eliminar el parametro?"
+				header="Confirmacion" severity="warn">
+				<p:commandButton value="Si" icon="pi pi-check"
+					actionListener="#{listarParametroMB.eliminarPara}" process="@this"
+					oncomplete="PF('eliminar').hide()" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-button-secondary" icon="pi pi-times"
+					onclick="PF('eliminar').hide()" />
+			</p:confirmDialog>
+		</h:form>
+	</div>
+	<div class="card">
+		<h2>Auditoria</h2>
+		<h:form>
+
+			<div class="auditoria">
+				<p:dataTable id="auditoria" var="auditoria"
+					value="#{auditoriaMB.listaAuditorias}" showGridlines="true">
+
+					<p:column headerText="ID">
+						<h:outputText value="#{auditoria.id}" />
+					</p:column>
+					<p:column headerText="ID Usuario" filterBy="#{auditoria.idUsuario}">
+						<h:outputText value="#{auditoria.idUsuario}" />
+					</p:column>
+
+					<p:column headerText="Fecha Auditoria">
+						<h:outputText value="#{auditoria.fechaAuditoria}" />
+					</p:column>
+
+
+					<p:column headerText="ID Tabla">
+						<h:outputText value="#{auditoria.idTabla}" />
+					</p:column>
+
+					<p:column headerText="Nombre Tabla">
+						<h:outputText value="#{auditoria.nombreTabla}" />
+					</p:column>
+
+					<p:column headerText="Accion Auditoria">
+						<h:outputText value="Login"
+							rendered="#{auditoria.accionAuditoria == 'L'}" />
+						<h:outputText value="Actualizacion"
+							rendered="#{auditoria.accionAuditoria == 'U'}" />
+						<h:outputText value="Eliminacion"
+							rendered="#{auditoria.accionAuditoria == 'D'}" />
+						<h:outputText value="Insercion"
+							rendered="#{auditoria.accionAuditoria == 'I'}" />
+						<h:outputText value="Logout"
+							rendered="#{auditoria.accionAuditoria == 'E'}" />
+
+					</p:column>
+
+
+				</p:dataTable>
+			</div>
+		</h:form>
+	</div>
+	
+	<div class="card">
+	<h2>Usuarios</h2>
+		<h:form id="formUsuario">
+			<p:growl id="msjs" showDetail="true" />
+			<p:toolbar>
+				<p:toolbarGroup>
+					<p:commandButton value="Nuevo" type="button" icon="pi pi-plus"
+						update=":dialogNuevoUsuario" action="#{usuarioMB.reset()}"
+						onclick="PF('nuevoUsuario').show()">
+						<p:ajax update="dialogNuevoUsuario:usuarioGrid" resetValues="true" />
+					</p:commandButton>
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Exportar Tabla" icon="pi pi-file-pdf"
+						styleClass="ui-button-danger" ajax="false">
+						<p:dataExporter type="pdf" target="usuarios" fileName="Usuarios" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+			</p:toolbar>
+			<div class="usuarios">
+				<p:dataTable id="usuarios" var="usuario"
+					value="#{usuarioMB.listaUsuarios}" showGridlines="true"
+					editable="true">
+
+					<p:ajax event="rowEdit" listener="#{usuarioMB.editarUsuario}"
+						update=":formUsuario:usuarios" />
+
+					<p:ajax event="rowEditCancel" listener="#{usuarioMB.onRowCancel}"
+						update=":formUsuario:msjs" />
+
+					<p:column headerText="Login">
+						<h:outputText value="#{usuario.login}" />
+					</p:column>
+
+					<p:column headerText="Nombre ">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{usuario.nombreUsuario}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="InpNombreUsuario"
+									value="#{usuario.nombreUsuario}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Apellido">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{usuario.apellidoUsuario}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="InpApellidoUsuario"
+									value="#{usuario.apellidoUsuario}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Correo Usuario">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{usuario.correoUsuario}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText id="InpCorreoUsuario"
+									value="#{usuario.correoUsuario}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+
+					<p:column headerText="Tipo Usuario">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="Gestor de Inventario"
+									rendered="#{usuario.tipoUsuario == 'G'}" />
+								<h:outputText value="Cajero"
+									rendered="#{usuario.tipoUsuario == 'C'}" />
+								<h:outputText value="Administrador"
+									rendered="#{usuario.tipoUsuario == 'A'}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu id="InpTipoUsuario" style="width: 100%;"
+									value="#{usuario.tipoUsuario}">
+									<f:selectItem itemLabel="Administrador" itemValue="A" />
+									<f:selectItem itemLabel="Gestor de Inventario" itemValue="G" />
+									<f:selectItem itemLabel="Cajero" itemValue="C" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Estado Usuario">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="Activo"
+									rendered="#{usuario.estadoUsusario == 1}" />
+								<h:outputText value="Inactivo"
+									rendered="#{usuario.estadoUsusario == 0}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu id="InpEstadoUsuario" style="width: 100%;"
+									value="#{usuario.estadoUsusario}">
+									<f:selectItem itemLabel="Activo" itemValue="1" />
+									<f:selectItem itemLabel="Inactivo" itemValue="0" />
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Cantidad Intentos">
+						<h:outputText value="#{usuario.cantIntentos}" />
+					</p:column>
+
+
+					<p:column headerText="Fecha Registro">
+						<h:outputText value="#{usuario.fechaRegistro}"
+							pattern="yyyy-MM-dd" />
+					</p:column>
+
+
+					<p:column headerText="Fecha Ultima Clave">
+						<h:outputText value="#{usuario.fechaUtlimaClave}" />
+					</p:column>
+
+
+					<p:column headerText="Editar"
+						styleClass="edit-button rounded-button ui-button-success"
+						exportable="false">
+						<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+							saveTitle="Save Row" saveLabel="Save" cancelLabel="Cancel" />
+					</p:column>
+
+					<p:column headerText="Eliminar" exportable="false">
+						<p:commandButton icon="pi pi-trash"
+							styleClass="ui-button-warning rounded-button" process="@this"
+							oncomplete="PF('eliminar').show()">
+
+							<f:setPropertyActionListener value="#{usuario}"
+								target="#{usuarioMB.usuarioSeleccionado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</div>
+		</h:form>
+		<h:form id="dialogNuevoUsuario">
+			<p:dialog id="nuevoUsuario" widgetVar="nuevoUsuario" modal="true"
+				resizable="false" draggable="false">
+				<p:panelGrid id="usuarioGrid" columns="2" layout="grid">
+
+					<p:outputLabel for="loginUsuario" value="Login usuario:" />
+					<p:inputText id="loginUsuario" value="#{usuarioMB.login}" />
+
+					<p:outputLabel for="nombreUsuario" value="Nombre Usuario:" />
+					<p:inputText id="nombreUsuario" value="#{usuarioMB.nombreUsuario}" />
+
+					<p:outputLabel for="apellidoUsuario" value="Apellido del usuario:" />
+					<p:inputText id="apellidoUsuario"
+						value="#{usuarioMB.apellidoUsuario}" />
+
+					<p:outputLabel for="correoUsuario" value="Correo de Usuario:" />
+					<p:inputText id="correoUsuario" value="#{usuarioMB.correoUsuario}" />
+
+					<p:outputLabel for="tipoUsuario" value="Tipo Usuario:" />
+					<p:selectOneMenu id="tipoUsuario" style="width: 100%;"
+						value="#{usuarioMB.tipoUsuario}">
+						<f:selectItem itemLabel="Administrador" itemValue="A" />
+						<f:selectItem itemLabel="Gestor de Inventario" itemValue="G" />
+						<f:selectItem itemLabel="Cajero" itemValue="C" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="estadoUsuario" value="Estado Usuario:" />
+					<p:selectOneMenu id="estadoUsuario" style="width: 100%;"
+						value="#{usuarioMB.estadoUsusario}">
+						<f:selectItem itemLabel="Activo" itemValue="1" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+				<f:facet name="footer">
+					<p:commandButton type="button" value="Cancelar"
+						styleClass="ui-button-flat mr-2" style="width: 6rem"
+						update="usuarioGrid" process="@this" action="#{usuarioMB.reset()}"
+						onclick="PF('nuevoUsuario').hide()" resetValues="true">
+						<p:ajax update="usuarioGrid" resetValues="true" />
+					</p:commandButton>
+					<p:commandButton value="Agregar" style="width: 6rem"
+						action="#{usuarioMB.crearUsuario}" update=":formUsuario:msjs"
+						process="@form" ajax="true" actionListener="#{usuarioMB.showInfo}"
+						resetValues="true" />
+				</f:facet>
+			</p:dialog>
+		</h:form>
+	</div>
 
 </h:body>
 </html>
