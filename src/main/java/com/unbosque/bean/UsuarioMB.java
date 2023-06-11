@@ -169,7 +169,7 @@ public class UsuarioMB {
 		int longitudContrasena = random.nextInt(8 - 5 + 1) + 5;
 		StringBuilder contrasena = new StringBuilder();
 
-		// Asegurar al menos un número, una letra mayuscula y una letra minuscula
+		// Asegurar al menos un nï¿½mero, una letra mayuscula y una letra minuscula
 		contrasena.append(mayusculas.charAt(random.nextInt(mayusculas.length())));
 		contrasena.append(minusculas.charAt(random.nextInt(minusculas.length())));
 		contrasena.append(numbers.charAt(random.nextInt(numbers.length())));

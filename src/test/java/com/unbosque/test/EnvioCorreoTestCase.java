@@ -19,8 +19,9 @@ public class EnvioCorreoTestCase {
     public void testEnviarCorreo() {
         String destinatario = "dvmurcia@unbosque.edu.co";
         String usuario = "Daniela";
+        String password = "Pgr1234";
 
-        boolean resultado = correoManager.enviarCorreo(destinatario, usuario);
+        boolean resultado = correoManager.enviarCorreo(destinatario, usuario, password);
 
         assertTrue(resultado);
     }
