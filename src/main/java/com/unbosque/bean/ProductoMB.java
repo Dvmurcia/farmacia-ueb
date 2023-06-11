@@ -5,7 +5,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
+
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
@@ -16,7 +18,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class ProductoMB {
 
 	private int id;
@@ -26,11 +28,11 @@ public class ProductoMB {
 	private int idCategoria;
 	private int stockMin;
 	private int stockMax;
-	//private byte iva;
+	// private byte iva;
 	private Integer iva;
 	private int precioVenta;
 	private int precioCompra;
-	//private byte estadoProd;
+	// private byte estadoProd;
 	private Integer estadoProd;
 	private Producto producto;
 	private List<Producto> listaProductos;
@@ -39,15 +41,22 @@ public class ProductoMB {
 	@Inject
 	private ProductoService productoService;
 
+	@ManagedProperty(value = "#{loginMB}")
+	private LoginMB sesion;
+
+	public LoginMB getSesion() {
+		return sesion;
+	}
+
+	public void setSesion(LoginMB sesion) {
+		this.sesion = sesion;
+	}
+
 	@PostConstruct
 	private void init() {
 		this.productoService = new ProductoService();
 		this.listaProductos = getListarProductos();
 
-	}
-	
-	public void testBtn() {
-		System.out.println("Prueba ejecucion boton");
 	}
 
 	public void nuevoProducto() {
@@ -117,11 +126,11 @@ public class ProductoMB {
 	}
 
 	public void eliminarProd() {
-		System.out.println("eliminando: " +  this.prodSeleccionado);
-		this.productoService.remove(this.prodSeleccionado);
-		this.listaProductos.remove(this.prodSeleccionado);
-		this.prodSeleccionado = null;
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Producto eliminado"));
+		Integer estado = 0;
+		System.out.println("Cambiando estado: " + this.prodSeleccionado);
+		this.prodSeleccionado.setEstadoProducto(estado.byteValue());
+		this.productoService.update(this.prodSeleccionado);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Estado del producto cambiado"));
 		PrimeFaces.current().ajax().update("form:msjs", "form:productos");
 	}
 
@@ -130,7 +139,7 @@ public class ProductoMB {
 	}
 
 	public void showInfo() {
-		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operación exitosa");
+		addMessage(FacesMessage.SEVERITY_INFO, "Informacion", "Operaciï¿½n exitosa");
 	}
 
 	public int getId() {

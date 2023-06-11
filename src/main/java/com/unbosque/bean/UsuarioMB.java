@@ -117,9 +117,10 @@ public class UsuarioMB {
 	}
 
 	public void eliminarUsuario() {
-		this.usuarioService.remove(this.usuarioSeleccionado);
-		this.listaUsuarios.remove(this.usuarioSeleccionado);
-		this.usuarioSeleccionado = null;
+		Integer estado = 0;
+		System.out.println("Cambiando estado: " + this.usuarioSeleccionado);
+		this.usuarioSeleccionado.setEstadoUsusario(estado.byteValue());
+		this.usuarioService.update(this.usuarioSeleccionado);
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Usuario eliminado"));
 		PrimeFaces.current().ajax().update("form:msjs", "form:usuarios");
 	}
