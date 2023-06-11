@@ -4,70 +4,50 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:f="http://java.sun.com/jsf/core">
 <h:head>
-	<title>Lista de Productos</title>
+	<title>Lista de Auditoria</title>
 </h:head>
-<style>
-.ui-filter-column .ui-column-customfilter .custom-filter {
-	width: 100%;
-	box-sizing: border-box;
-}
-</style>
-
 <div class="card">
 	<h1>Auditoria</h1>
 	<h:form>
-		<p:dataTable var="customer" value="#{dtFilterView.customers1}"
-			widgetVar="customersTable"
-			emptyMessage="No customers found with given criteria"
-			filteredValue="#{dtFilterView.filteredCustomers1}"
-			globalFilterOnly="#{dtFilterView.globalFilterOnly}">
-			<p:column field="date" headerText="Join Date"
-				filterMatchMode="between">
-				<f:facet name="filter">
-					<p:datePicker selectionMode="range"
-						onchange="PF('customersTable2').filter()"
-						styleClass="ui-custom-filter" />
-				</f:facet>
-			</p:column>
-			<p:column headerText="Name" sortBy="#{customer.name}"
-				filterBy="#{auditoria.id_usuario}" filterMatchMode="contains">
-				<h:outputText value="#{auditoria.id_usuario}" />
-			</p:column>
 
-			<p:column field="fecha_auditoria" headerText="Fecha Auditoria"
-				filterMatchMode="exact" sortBy="#{auditoria.fecha_auditoria}">
-				<f:facet name="filter">
-					<p:selectOneMenu onchange="PF('customersTable').filter()"
-						styleClass="ui-custom-filter">
-						<f:selectItem itemLabel="All" itemValue="#{null}"
-							noSelectionOption="true" />
-						<f:selectItems value="#{dtFilterView.representatives}" />
-					</p:selectOneMenu>
-				</f:facet>
-			</p:column>
-		</p:dataTable>
-		<div class="inventario">
-			<p:dataTable id="productos" var="producto"
-				value="#{AuditoriaMB.listarAuditoria}" showGridlines="true"
-				editable="true">
+		<div class="auditoria">
+			<p:dataTable id="auditoria" var="auditoria"
+				value="#{auditoriaMB.listaAuditorias}" showGridlines="true">
 
 				<p:column headerText="ID">
-					<h:outputText value="#{producto.id}" />
+					<h:outputText value="#{auditoria.id}" />
 				</p:column>
-				<p:column headerText="Referencia Producto">
-					<h:outputText value="#{producto.referenciaProducto}" />
+				<p:column headerText="ID Usuario" filterBy="#{auditoria.idUsuario}">
+					<h:outputText value="#{auditoria.idUsuario}" />
 				</p:column>
-				<p:column headerText="Descripcion Producto">
-					<h:outputText value="#{producto.descripcionProducto}" />
+
+				<p:column headerText="Fecha Auditoria">
+					<h:outputText value="#{auditoria.fechaAuditoria}" />
 				</p:column>
-				<p:column headerText="Existencia producto">
-					<h:outputText value="#{producto.existenciaProducto}" />
+
+
+				<p:column headerText="ID Tabla">
+					<h:outputText value="#{auditoria.idTabla}" />
 				</p:column>
-				<p:column headerText="ID Categoria">
-					<h:outputText
-						value="#{producto.idCategoria}" />
+
+				<p:column headerText="Nombre Tabla">
+					<h:outputText value="#{auditoria.nombreTabla}" />
 				</p:column>
-				
+
+				<p:column headerText="Accion Auditoria">
+					<h:outputText value="Login"
+						rendered="#{auditoria.accionAuditoria == 'L'}" />
+					<h:outputText value="Actualizacion"
+						rendered="#{auditoria.accionAuditoria == 'U'}" />
+					<h:outputText value="Eliminacion"
+						rendered="#{auditoria.accionAuditoria == 'D'}" />
+					<h:outputText value="Insercion"
+						rendered="#{auditoria.accionAuditoria == 'I'}" />
+					<h:outputText value="Logout"
+						rendered="#{auditoria.accionAuditoria == 'E'}" />
+
+				</p:column>
+
 
 			</p:dataTable>
 		</div>
