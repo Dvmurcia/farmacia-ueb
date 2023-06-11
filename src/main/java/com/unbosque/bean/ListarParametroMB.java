@@ -95,14 +95,14 @@ public class ListarParametroMB {
 	}
 
 	public void eliminarPara() {
-		System.out.println("eliminando: " + parametroSelec);
-		this.parametroService.remove(this.parametroSelec);
-		this.parametros.remove(this.parametroSelec);
-		generarAuditoria("D", this.parametroSelec);
-		this.parametroSelec = null;
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Parametro eliminado"));
+		Integer estado = 0;
+		System.out.println("Cambiando estado: " + this.parametroSelec);
+		this.parametroSelec.setEstadoParametro(estado.byteValue());
+		this.parametroService.update(this.parametroSelec);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Estado del parametro cambiado"));
 		PrimeFaces.current().ajax().update("form:msjs", "form:dt-parametros");
 	}
+	
 
 	private void generarAuditoria(String accion, Parametro elemento) {
 		try {
